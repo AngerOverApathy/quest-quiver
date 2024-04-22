@@ -3,49 +3,56 @@ const Schema = mongoose.Schema;
 
 const itemSchema = new Schema({
   name: { type: String, required: true },
-  desc: { type: [String], default: [] }, // Unified description field
+  desc: { type: [String], default: [] }, // Unified description field from fetchedEquipmentSchema 'desc'
 
-  category_range: { 
-    name: { type: String, default: '' } // Standardizing category name field
+  equipment_category: { 
+    name: { type: String, default: '' } // Standardizing category name field from fetchedEquipmentSchema
   },
   
-  rarity: { type: String, default: '' }, // Using string directly
-  requiresAttunement: { type: Boolean, default: false },
+  rarity: { type: String, default: '' }, // Using string directly, aligned with the simplicity of fetchedEquipmentSchema
 
-  // Damage attributes using nested sub-documents for types
+  requiresAttunement: { type: Boolean, default: false }, // Keeping alignment with the fetched schema's boolean flag usage
+
+  // Damage attributes using fetched schema naming conventions
   damage: {
     damage_dice: { type: String },
-    damage_type: { type: String } // Simplified from damage_type: { name: String }
+    damage_type: { 
+      name: { type: String } // Using sub-document to match fetched schema structure
+    }
   },
 
   // Two-handed damage attributes
   two_handed_damage: {
     damage_dice: { type: String },
-    damage_type: { type: String } // Simplified from damage_type: { name: String }
+    damage_type: {
+      name: { type: String } // Using sub-document to match fetched schema structure
+    }
   },
 
   // Unified range attributes, including throwing ranges as nested sub-documents
   range: {
-    normal: { type: Number, default: 0 },
-    long: { type: Number, default: 0 },
-    throw_normal: { type: Number, default: 0 },
-    throw_long: { type: Number, default: 0 }
+    normal: { type: Number, default: null },
+    long: { type: Number, default: null }
   },
 
-  // Properties, now an array of objects for added flexibility
+  throwRange: { // Reflecting the same structure as fetched schema
+    normal: { type: Number, default: null },
+    long: { type: Number, default: null }
+  },
+
+  // Properties directly as array of objects from fetched schema
   properties: [{ 
     name: { type: String },
-    details: { type: String, default: '' } // Optional details
   }],
 
-  // Weight and cost as sub-documents
+  // Weight and cost as sub-documents from fetched schema
   weight: { type: Number, default: 0 },
   cost: {
     quantity: { type: Number, default: 0 },
     unit: { type: String, default: '' }
   },
   
-  // Magical flag and effects as an array for magical items
+  // Magical flag and effects similar structure as seen in the magical items schema
   magical: { type: Boolean, default: false },
   effects: [{ 
     effectName: { type: String },
