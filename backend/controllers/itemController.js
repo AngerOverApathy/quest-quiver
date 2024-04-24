@@ -1,4 +1,4 @@
-const Equipment = require('../models/itemSchema'); 
+const Equipment = require('../models/itemSchema');
 
 // Create a new equipment item
 const createEquipment = async (req, res) => {
