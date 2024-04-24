@@ -1,8 +1,9 @@
-require('dotenv').config();  
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const mongoURI = process.env.MONGODB_URI; // MongoDB Atlas connection string
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => {
     console.log('Connected to MongoDB Atlas');
   })
