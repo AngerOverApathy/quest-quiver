@@ -7,9 +7,9 @@ const {
     getEquipmentById,
     updateEquipment,
     deleteEquipment
-} = require('../controllers/itemController'); // Ensure the path matches the actual location
+} = require('../controllers/itemController'); 
 
-// Define routes
+//Routes
 router.post('/', createEquipment);               // Create new equipment
 router.get('/', getAllEquipment);                // Get all equipment items
 router.get('/:id', getEquipmentById);            // Get a single equipment item by ID
