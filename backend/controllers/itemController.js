@@ -7,7 +7,12 @@ const createEquipment = async (req, res) => {
     const savedEquipment = await newEquipment.save();
     res.status(201).json(savedEquipment);
   } catch (error) {
-    res.status(400).json({ message: 'Failed to create new equipment', error });
+    console.error("Error when creating equipment:", error);
+    res.status(400).json({
+      message: 'Failed to create new equipment',
+      error: error.toString(),  // Change this to see if it helps capture the error message
+      stack: error.stack  // Optionally include the stack trace for deeper insight
+    });
   }
 };
 

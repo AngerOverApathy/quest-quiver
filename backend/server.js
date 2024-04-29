@@ -7,7 +7,10 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 
 // database.js
-const mongoose = require('./config/database.js');
+const connectDB = require('./config/database.js');
+
+// Call the function to connect to the database
+connectDB();
 
 //Import routes
 const itemRoutes = require('./routes/itemRoutes'); 
