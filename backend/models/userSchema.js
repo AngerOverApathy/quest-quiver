@@ -6,7 +6,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
+        unique: false,
         trim: true, // Trims whitespace from the username
         minlength: 3
     },
