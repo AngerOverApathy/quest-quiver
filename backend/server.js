@@ -20,7 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Use routes
-app.use('/items', itemRoutes); 
+app.use('/items', require('./routes/itemRoutes'));
+app.use('/users', require('./routes/userRoutes')); 
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
