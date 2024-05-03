@@ -7,7 +7,7 @@ const {
     getEquipmentById,
     updateEquipment,
     deleteEquipment
-} = require('../controllers/itemController'); 
+} = require('../controllers/equipmentController'); 
 
 //Routes
 router.post('/', protect, createEquipment);               // Create new equipment

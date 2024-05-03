@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const itemSchema = new Schema({
+const equipmentSchema = new Schema({
   name: { type: String, required: true },
   desc: { type: [String], default: [] },
 
@@ -53,5 +53,5 @@ const itemSchema = new Schema({
   }]
 });
 
-const Equipment = mongoose.model('Equipment', itemSchema);
+const Equipment = mongoose.model('Equipment', equipmentSchema);
 module.exports = Equipment;

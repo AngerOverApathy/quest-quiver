@@ -14,11 +14,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Import routes
-const itemRoutes = require('./routes/itemRoutes');
+const equipmentRoutes = require('./routes/equipmentRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 // Use routes
-app.use('/items', itemRoutes);
+app.use('/equipment', equipmentRoutes);
 app.use('/user', userRoutes);
 app.use(errorHandler);
 
