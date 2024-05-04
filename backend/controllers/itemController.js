@@ -1,77 +1,77 @@
-const Equipment = require('../models/itemSchema');
+const Item = require('../models/itemSchema');
 
-// Create a new equipment item
-const createEquipment = async (req, res) => {
+// Create a new item
+const createItem = async (req, res) => {
   try {
-    const newEquipment = new Equipment(req.body);
-    const savedEquipment = await newEquipment.save();
-    res.status(201).json(savedEquipment);
+    const newItem = new Item(req.body);
+    const savedItem = await newItem.save();
+    res.status(201).json(savedItem);
   } catch (error) {
-    console.error("Error when creating equipment:", error);
+    console.error("Error when creating item:", error);
     res.status(400).json({
-      message: 'Failed to create new equipment',
-      error: error.toString(),  // Change this to see if it helps capture the error message
-      stack: error.stack  // Optionally include the stack trace for deeper insight
+      message: 'Failed to create new item',
+      error: error.message, // Changed this to provide a more explicit message
+      stack: error.stack // Optionally include the stack trace for deeper insight
     });
   }
 };
 
-// Get all equipment items
-const getAllEquipment = async (req, res) => {
+// Get all items
+const getAllItems = async (req, res) => {
   try {
-    const equipments = await Equipment.find();
-    res.status(200).json(equipments);
+    const items = await Item.find({ user: req.user.id });
+    res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to get equipment', error });
+    res.status(500).json({ message: 'Failed to get items', error });
   }
 };
 
-// Get a single equipment item by ID
-const getEquipmentById = async (req, res) => {
+// Get a single item by ID
+const getItemById = async (req, res) => {
   try {
-    const equipment = await Equipment.findById(req.params.id);
-    if (!equipment) {
-      res.status(404).json({ message: 'Equipment not found' });
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      res.status(404).json({ message: 'Item not found' });
     } else {
-      res.status(200).json(equipment);
+      res.status(200).json(item);
     }
   } catch (error) {
-    res.status(500).json({ message: 'Failed to get equipment', error });
+    res.status(500).json({ message: 'Failed to get item', error });
   }
 };
 
-// Update an equipment item
-const updateEquipment = async (req, res) => {
+// Update an item
+const updateItem = async (req, res) => {
   try {
-    const updatedEquipment = await Equipment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedEquipment) {
-      res.status(404).json({ message: 'Equipment not found' });
+    const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedItem) {
+      res.status(404).json({ message: 'Item not found' });
     } else {
-      res.status(200).json(updatedEquipment);
+      res.status(200).json(updatedItem);
     }
   } catch (error) {
-    res.status(400).json({ message: 'Failed to update equipment', error });
+    res.status(400).json({ message: 'Failed to update item', error });
   }
 };
 
-// Delete an equipment item
-const deleteEquipment = async (req, res) => {
+// Delete an item
+const deleteItem = async (req, res) => {
   try {
-    const result = await Equipment.findByIdAndDelete(req.params.id);
+    const result = await Item.findByIdAndDelete(req.params.id);
     if (result) {
-      res.status(200).json({ message: 'Equipment deleted successfully' });
+      res.status(200).json({ message: 'Item deleted successfully' });
     } else {
-      res.status(404).json({ message: 'Equipment not found' });
+      res.status(404).json({ message: 'Item not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Failed to delete equipment', error });
+    res.status(500).json({ message: 'Failed to delete item', error });
   }
 };
 
 module.exports = {
-  createEquipment,
-  getAllEquipment,
-  getEquipmentById,
-  updateEquipment,
-  deleteEquipment
+  createItem,
+  getAllItems,
+  getItemById,
+  updateItem,
+  deleteItem
 };
