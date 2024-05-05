@@ -68,7 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getUserData = asyncHandler(async (req, res) => {
-    res.json({ message: 'Get User Data' });
+    res.json({ message: 'User Data' });
 })
 
 //generate token
