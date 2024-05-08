@@ -2,27 +2,27 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
+const { errorHandler } = require('./middleware/errorMiddleware.js')   
 const PORT = process.env.PORT || 5050;
 
-// database.js
+// Database connection
 const connectDB = require('./config/database.js');
-
-// Call the function to connect to the database
 connectDB();
-
-//Import routes
-const itemRoutes = require('./routes/itemRoutes'); 
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
+
+// Import routes
+const itemRoutes = require('./routes/itemRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Use routes
-app.use('/items', require('./routes/itemRoutes'));
-app.use('/user', require('./routes/userRoutes')); 
+app.use('/items', itemRoutes);
+app.use('/user', userRoutes);
+app.use(errorHandler);
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-  });
+});
