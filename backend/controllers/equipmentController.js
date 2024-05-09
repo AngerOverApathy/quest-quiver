@@ -11,8 +11,8 @@ const equipmentController = {
       console.error("Error when creating equipment:", error);
       res.status(400).json({
         message: 'Failed to create new equipment',
-        error: error.toString(),
-        stack: error.stack // Optionally include the stack trace for deeper insight
+        error: error.message, // Provide more specific error message
+        stack: error.stack    // Optionally include the stack trace for deeper analysis
       });
     }
   },

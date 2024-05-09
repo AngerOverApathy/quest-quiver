@@ -7,10 +7,11 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
 const userController = {
+
   // Register a new user
   registerUser: asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
-
+    console.log(req.body)
     if (!username || !email || !password) {
       res.status(400);
       throw new Error('Please fill all fields');
