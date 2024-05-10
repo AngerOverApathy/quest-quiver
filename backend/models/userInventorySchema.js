@@ -25,7 +25,7 @@ const userInventorySchema = new Schema({
     }
 }, {
     timestamps: true // Automatically generates createdAt and updatedAt fields for each record modification
-// });
+});
 
 const UserInventory = mongoose.model('UserInventory', userInventorySchema);
 module.exports = UserInventory;
