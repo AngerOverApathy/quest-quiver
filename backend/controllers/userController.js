@@ -1,6 +1,3 @@
-// Desc: User Controller
-// Path: backend/controllers/userController.js
-// Access: Public
 const User = require('../models/userSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -11,7 +8,9 @@ const userController = {
   // Register a new user
   registerUser: asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
-    console.log(req.body)
+    
+    console.log('Received data:', req.body); // Log received data
+
     if (!username || !email || !password) {
       res.status(400);
       throw new Error('Please fill all fields');
@@ -57,15 +56,20 @@ const userController = {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        token: userController.generateToken(user._id),
-      });
+        // Generate JWT token
+        const token = userController.generateToken(user._id);
+
+        res.json({
+            message: "Login successful",
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            },
+            token: token  // Sending token separately for clarity
+        });
     } else {
-      res.status(401);
-      throw new Error('Invalid email or password');
+        res.status(401).json({ message: 'Invalid email or password' });
     }
   }),
 

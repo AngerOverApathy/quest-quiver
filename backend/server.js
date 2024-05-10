@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 require('dotenv').config();
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -10,6 +11,20 @@ connectDB();
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Enable CORS
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
+// Middleware to log CORS headers
+app.use((req, res, next) => {
+    console.log('CORS Headers Set:', res.getHeaders()['access-control-allow-origin']);
+    next();
+});
 
 // Import routes
 const equipmentRoutes = require('./routes/equipmentRoutes');
