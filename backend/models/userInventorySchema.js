@@ -19,10 +19,13 @@ const userInventorySchema = new Schema({
         type: Date, 
         default: Date.now 
     },
-    customizations: [{
-        customizationName: { type: String },
-        customizationDesc: { type: String }
-    }]
+    customizations: {
+        type: String,
+        default: ''
+    }
 }, {
     timestamps: true // Automatically generates createdAt and updatedAt fields for each record modification
 });
+
+const UserInventory = mongoose.model('UserInventory', userInventorySchema);
+module.exports = UserInventory;
