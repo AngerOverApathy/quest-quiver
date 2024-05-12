@@ -16,10 +16,12 @@ app.use(express.urlencoded({ extended: false }));
 // Import routes
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const userRoutes = require('./routes/userRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes');
 
 // Use routes
 app.use('/equipment', equipmentRoutes);
 app.use('/user', userRoutes);
+app.use('/inventory', inventoryRoutes);
 app.use(errorHandler);
 
 // Start the server
