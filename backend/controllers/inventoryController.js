@@ -1,4 +1,5 @@
 const UserInventory = require('../models/userInventorySchema');
+const Equipment = require('../models/equipmentSchema');
 
 const inventoryController = {
   // Fetch all inventory items for the logged-in user
@@ -20,8 +21,14 @@ const inventoryController = {
     try {
       const { equipmentId, quantity, customizations } = req.body;
 
+      // Ensure the equipment exists
+      const equipment = await Equipment.findById(equipmentId);
+      if (!equipment) {
+        return res.status(404).json({ message: "Equipment not found" });
+      }
+
       const newItem = new UserInventory({
-        userId: req.user.id,
+        user: req.user.id,
         equipmentId,
         quantity,      
         customizations
@@ -38,3 +45,5 @@ const inventoryController = {
     }
   }
 };
+
+module.exports = inventoryController;

@@ -1,5 +1,5 @@
 const userInventorySchema = new Schema({
-    userId: { 
+    user: { 
         type: Schema.Types.ObjectId, 
         ref: 'User',
         required: true 
@@ -16,10 +16,6 @@ const userInventorySchema = new Schema({
         type: Date, 
         default: Date.now 
     },
-    condition: { 
-        type: String, 
-        default: "" 
-    }, // Example values: "New", "Used", "Damaged"
     customizations: [{
         customizationName: { type: String },
         customizationDesc: { type: String }
