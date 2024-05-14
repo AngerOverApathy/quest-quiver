@@ -4,7 +4,7 @@ const inventoryController = {
   // Fetch all inventory items for the logged-in user
   async getUserInventory(req, res) {
     try {
-      const userInventory = await UserInventory.find({ userId: req.user.id })
+      const userInventory = await UserInventory.find({ user: req.user.id })
         .populate('equipmentId')  // Assuming you want to fetch details of the equipment
         .exec();
 
@@ -18,13 +18,12 @@ const inventoryController = {
   // Add an equipment to user inventory
   async addEquipmentToInventory(req, res) {
     try {
-      const { equipmentId, quantity, condition, customizations } = req.body;
+      const { equipmentId, quantity, customizations } = req.body;
 
       const newItem = new UserInventory({
         userId: req.user.id,
         equipmentId,
-        quantity,
-        condition,
+        quantity,      
         customizations
       });
 
