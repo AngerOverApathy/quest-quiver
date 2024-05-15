@@ -3,9 +3,8 @@ const router = express.Router();
 const inventoryController = require('../controllers/inventoryController');
 const { protect } = require('../middleware/authMiddleware');
 
-// Fetch all inventory items for the logged-in user
 router.get('/', protect, inventoryController.getUserInventory);
-// Add an equipment to user inventory
 router.post('/', protect, inventoryController.addEquipmentToInventory);
+router.put('/:id', protect, inventoryController.updateInventoryItem);
 
 module.exports = router;
