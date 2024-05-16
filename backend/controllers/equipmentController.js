@@ -74,20 +74,31 @@ const equipmentController = {
     }
   },
 
-  // Fetch data from the external D&D API
+  //Fetch data from an external API
   async fetchData(req, res) {
-    const { type, index } = req.params; // Get type and index from the route parameters
+    const { index } = req.params; // Get index from the route parameters
     const baseUrl = 'https://www.dnd5eapi.co/api';
-    let apiUrl = `${baseUrl}/${type}/${index}`;
-
-    console.log(`Fetching data from ${apiUrl}`); // Add log to trace URL
+    const endpoints = [
+      `${baseUrl}/equipment/${index}`,
+      `${baseUrl}/magic-items/${index}`,
+      `${baseUrl}/weapon-properties/${index}`
+    ];
 
     try {
-      const response = await axios.get(apiUrl);
-      res.status(200).json(response.data);
+      // Try fetching data from each endpoint
+      const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
+      const apiResponses = await Promise.allSettled(apiRequests);
+
+      const successfulResponse = apiResponses.find(response => response.status === 'fulfilled');
+
+      if (successfulResponse) {
+        res.status(200).json(successfulResponse.value.data);
+      } else {
+        res.status(404).json({ message: 'Item not found' });
+      }
     } catch (error) {
-      console.error(`Error fetching data from ${apiUrl}:`, error);
-      res.status(500).json({ message: `Failed to fetch data from ${apiUrl}`, error: error.message });
+      console.error('Error fetching data:', error);
+      res.status(500).json({ message: 'Failed to fetch data', error: error.message });
     }
   }
 };
