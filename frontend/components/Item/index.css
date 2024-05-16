@@ -1,0 +1,29 @@
+.item-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  .item-container h3 {
+    color: #333;
+  }
+  
+  .item-container p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }  
