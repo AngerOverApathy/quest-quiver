@@ -1,3 +1,4 @@
+const axios = require('axios'); // Import Axios
 const Equipment = require('../models/equipmentSchema');
 
 const equipmentController = {
@@ -70,6 +71,23 @@ const equipmentController = {
       }
     } catch (error) {
       res.status(500).json({ message: 'Failed to delete equipment', error });
+    }
+  },
+
+  // Fetch data from the external D&D API
+  async fetchData(req, res) {
+    const { type, index } = req.params; // Get type and index from the route parameters
+    const baseUrl = 'https://www.dnd5eapi.co/api';
+    let apiUrl = `${baseUrl}/${type}/${index}`;
+
+    console.log(`Fetching data from ${apiUrl}`); // Add log to trace URL
+
+    try {
+      const response = await axios.get(apiUrl);
+      res.status(200).json(response.data);
+    } catch (error) {
+      console.error(`Error fetching data from ${apiUrl}:`, error);
+      res.status(500).json({ message: `Failed to fetch data from ${apiUrl}`, error: error.message });
     }
   }
 };

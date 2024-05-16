@@ -10,4 +10,6 @@ router.get('/:id', protect, equipmentController.getEquipmentById);            //
 router.put('/:id', protect, equipmentController.updateEquipment);             // Update an equipment item
 router.delete('/:id', protect, equipmentController.deleteEquipment);          // Delete an equipment item
 
+router.get('/external/:type/:index', equipmentController.fetchData); // Route to fetch equipment data from an external API
+
 module.exports = router;
