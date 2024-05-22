@@ -1,12 +1,10 @@
-require('dotenv').config();
-
 const express = require('express');
 const app = express();
-const { errorHandler } = require('./middleware/errorMiddleware.js')   
-const PORT = process.env.PORT || 5050;
+require('dotenv').config();
+const { errorHandler } = require('./middleware/errorMiddleware');
 
 // Database connection
-const connectDB = require('./config/database.js');
+const connectDB = require('./config/database');
 connectDB();
 
 // Middleware to parse JSON and URL-encoded data
@@ -22,9 +20,12 @@ const inventoryRoutes = require('./routes/inventoryRoutes');
 app.use('/equipment', equipmentRoutes);
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
+
+// Error Handler Middleware - should be after all route handlers
 app.use(errorHandler);
 
 // Start the server
+const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

@@ -31,23 +31,6 @@ const userSchema = new Schema({
     timestamps: true // Automatically generates createdAt and updatedAt fields
 });
 
-// Pre-save hook to hash password before saving to the database
-// userSchema.pre('save', async function(next) {
-//     const user = this;
-
-//     // Only hash the password if it has been modified (or is new)
-//     if (!user.isModified('password')) return next();
-
-//     // Generate a salt and hash the password
-//     const salt = await bcrypt.genSalt(10);
-//     user.password = await bcrypt.hash(user.password, salt);
-//     next();
-// });
-
-// // Method to compare a candidate password with the user's password
-// userSchema.methods.comparePassword = async function(candidatePassword) {
-//     return await bcrypt.compare(candidatePassword, this.password);
-// };
 
 // Create the model from the schema and export it
 const User = mongoose.model('User', userSchema);
