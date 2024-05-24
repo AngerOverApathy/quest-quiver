@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Login from './components/auth/Login'
 import './App.css'
 
 function App() {
@@ -6,7 +7,11 @@ function App() {
 
   return (
     <>
-      <p>hello world</p>
+    <div className="App">
+      <header className="App-header">
+        <Login />
+      </header>
+    </div>
     </>
   )
 }
