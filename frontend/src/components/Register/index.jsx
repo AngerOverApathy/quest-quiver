@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import authService from '../../../services/authService';
 
-function Login() {
+const Register = () => {
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = async (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault();
         try {
-            const response = await authService.login(email, password);
-            console.log('Login successful', response);
-            // Redirect or handle login success
+            const userData = { username, email, password };
+            const response = await authService.register(userData);
+            console.log('Registration successful', response);
+            // Redirect or handle registration success (e.g., navigate to another page)
         } catch (err) {
             setError(err.message);
         }
@@ -19,9 +21,18 @@ function Login() {
 
     return (
         <div>
-            <form onSubmit={handleLogin}>
-                <h2>Login</h2>
+            <form onSubmit={handleRegister}>
+                <h2>Register</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
+                <div>
+                    <label>Username:</label>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
                 <div>
                     <label>Email:</label>
                     <input
@@ -40,10 +51,10 @@ function Login() {
                         required
                     />
                 </div>
-                <button type="submit">Log In</button>
+                <button type="submit">Register</button>
             </form>
         </div>
     );
-}
+};
 
-export default Login;
+export default Register;

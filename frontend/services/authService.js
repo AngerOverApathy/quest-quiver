@@ -1,45 +1,55 @@
-/**
- * Function to handle user login
- * @param {string} email - User's email address
- * @param {string} password - User's password
- * @returns {Promise} - A promise that resolves with the user data if successful, otherwise throws an error
- */
-
-// Base URL for the API endpoints, adjust if your backend URL changes
 const API_BASE_URL = 'http://localhost:5050/user/';
 
-const login = async (email, password) => {
-    // Construct the full URL for the login endpoint
-    const response = await fetch(`${API_BASE_URL}login`, {
-        method: 'POST', // Use POST method for login
-        headers: {'Content-Type': 'application/json'}, // Set content type as JSON
-        body: JSON.stringify({ email, password }) // Convert the email and password to JSON string
-    });
-    
+const register = async (userData) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
 
-    // Parse the JSON response body
-    const data = await response.json();
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Registration failed');
+        }
 
-    // Check if the response status was 'ok' (HTTP status code in the range 200-299)
-    if (response.ok) {
-        // If login is successful, store the received JWT in local storage
-        localStorage.setItem('token', data.token);
-    } else {
-        // If login is not successful, throw an error with the message from the server
-        throw new Error(data.message);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error registering user:', error);
+        throw error;
     }
 };
 
-/**
- * Function to log out the user
- */
+const login = async (email, password) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Login failed');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        throw error;
+    }
+};
+
 const logout = () => {
-    // Remove the JWT from local storage to log out the user
     localStorage.removeItem('token');
 };
 
-// Export the login and logout functions for use in other parts of the application
 export default {
+    register,
     login,
-    logout
+    logout,
 };
