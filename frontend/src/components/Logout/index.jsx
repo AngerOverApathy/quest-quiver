@@ -1,15 +1,15 @@
 // components/Logout.js
 import React from 'react';
-import { useHistory } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; 
 import authService from '../../../services/authService';
 
 const Logout = () => {
-    const history = useHistory(); 
+    const navigate = useNavigate(); 
 
     const handleLogout = () => {
         authService.logout();
         console.log('Logout successful');
-        history.push('/login'); 
+        navigate('/login'); 
     };
 
     return (
