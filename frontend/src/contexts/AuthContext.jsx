@@ -4,10 +4,10 @@ import React, { createContext, useState, useContext } from 'react';
 const AuthContext = createContext();
 
 // Custom hook to use the AuthContext
-export const useAuth = () => useContext(AuthContext);
+const useAuth = () => useContext(AuthContext);
 
 // AuthProvider component that will wrap the app or part of it
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     // Function to log in the user
@@ -22,3 +22,6 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+// Consolidate the exports at the bottom
+export { AuthProvider, useAuth, AuthContext };

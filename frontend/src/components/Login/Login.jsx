@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import authService from '../../../services/authService';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import authService from '../../../services/authService'; 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate(); // Use useNavigate hook from react-router-dom
+    const { login } = useAuth();
 
     const handleLogin = async (event) => {
         event.preventDefault();
         try {
             await authService.login(email, password);
+            login(); // Update auth context
             console.log('Login successful');
-            // Redirect or handle login success (e.g., navigate to another page)
+            navigate('/home'); // Redirect to home page after successful login
         } catch (err) {
             setError(err.message);
         }

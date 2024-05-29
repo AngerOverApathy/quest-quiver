@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Login from '../../components/Login';
-import Register from '../../components/Register';
+import Login from '../../components/Login/Login';
+import Register from '../../components/Register/Register';
 
 const AuthPage = () => {
     // State to track whether the user is in "Register" mode or "Login" mode
