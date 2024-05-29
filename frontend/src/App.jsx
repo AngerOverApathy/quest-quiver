@@ -1,23 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AuthPage from './pages/AuthPage/AuthPage'; 
-import Logout from './components/Logout/Logout'; 
-import Navbar from './components/Navbar/Navbar';
+import AuthPage from './pages/AuthPage/AuthPage';
 import HomePage from './pages/HomePage/HomePage';
+import Logout from './components/Logout';
+import Navbar from './components/Navbar/Navbar';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
-import './App.css'; 
+import './App.css';
 
 function App() {
   return (
-    // Wrap the entire application with AuthProvider to make authentication state available globally
     <AuthProvider>
       <Router>
-        <Navbar />  
+        <Navbar />
         <Routes>
-          <Route path="/" element={<AuthPage />} /> {/* Route for the landing page, which includes login and register functionality */}
-          <Route path="/home" element={<HomePage />} /> 
-          <Route path="/login" element={<AuthPage />} /> 
-          <Route path="/logout" element={<Logout />} /> 
+          <Route path="/" element={<AuthPage />} />
+          <Route path="/home" element={<ProtectedRoute element={<HomePage />} />} /> 
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/login" element={<AuthPage />} />
         </Routes>
       </Router>
     </AuthProvider>
