@@ -14,40 +14,40 @@ function Item({ item, onDelete, onEdit }) {
       <p>{item.description}</p>
       {showDetails && (
         <div>
-            {/* Conditionally render Equipment Type if it exists */}
+            {/* Equipment Type */}
             {item.equipmentType && <p><strong>Equipment Type:</strong> {item.equipmentType}</p>}
 
-            {/* Conditionally render Equipment Category if it exists */}
+            {/* Equipment Category */}
             {item.equipmentCategory && <p><strong>Equipment Category:</strong> {item.equipmentCategory}</p>}
 
-            {/* Conditionally render Weapon Category if it exists */}
+            {/* Weapon Category */}
             {item.weaponCategory && <p><strong>Weapon Category:</strong> {item.weaponCategory}</p>}
 
-            {/* Conditionally render Damage and Damage Type if both exist */}
+            {/* Damage and Damage Type if both exist */}
             {item.damage && item.damageType && <p><strong>Damage / Type:</strong> {item.damage} / {item.damageType}</p>}
 
-            {/* Conditionally render Two-Handed Damage if it exists */}
+            {/* Two-Handed Damage */}
             {item.twoHandedDamage && <p><strong>Two-Handed Damage:</strong> {item.twoHandedDamage}</p>}
 
-            {/* Conditionally render Range if it exists */}
+            {/* Range */}
             {item.range && <p><strong>Range:</strong> {item.range}</p>}
 
-            {/* Conditionally render Throw Range if normal and long ranges exist */}
+            {/* Throw Range if normal and long ranges exist */}
             {item.throwRange && <p><strong>Throw Range:</strong> Normal: {item.throwRange.normal}, Long: {item.throwRange.long}</p>}
 
-            {/* Conditionally render Properties if the array exists and is not empty */}
+            {/* Properties if the array exists and is not empty */}
             {item.properties && item.properties.length > 0 && <p><strong>Properties:</strong> {item.properties.join(', ')}</p>}
 
-            {/* Conditionally render Cost if it exists */}
+            {/* Cost */}
             {item.cost && <p><strong>Cost:</strong> {item.cost.quantity} {item.cost.unit}</p>}
 
-            {/* Conditionally render Weight if it exists */}
+            {/* Weight */}
             {item.weight && <p><strong>Weight:</strong> {item.weight} lbs</p>}
 
-            {/* Conditionally render Description if it exists */}
+            {/* Description */}
             {item.description && <p><strong>Description:</strong> {item.description}</p>}
 
-            {/* Conditionally render Rarity if it exists */}
+            {/* Rarity */}
             {item.rarity && <p><strong>Rarity:</strong> {item.rarity}</p>}
         </div>
       )}
@@ -60,4 +60,4 @@ function Item({ item, onDelete, onEdit }) {
   );
 }
 
-export default Item;
+// export default Item;
