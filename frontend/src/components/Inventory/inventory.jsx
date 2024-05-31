@@ -1,78 +1,51 @@
 import React, { useState, useEffect } from 'react';
-
-function InventoryComponent() {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/user/inventory')
-      .then(response => response.json())
-      .then(data => setItems(data))
-      .catch(error => console.error('Error fetching inventory:', error));
-  }, []);
-
-  const handleDelete = (itemId) => {
-    // API call to delete item
-    // On success, remove item from state
-  };
-
-  const handleEdit = (itemData) => {
-    // Possibly set up state and pass to a form to edit
-  };
-
-  return (
-    <div>
-      {items.map(item => (
-        <div key={item._id}>
-          <h3>{item.name}</h3>
-          <p>{item.description}</p>
-          <button onClick={() => handleEdit(item)}>Edit</button>
-          <button onClick={() => handleDelete(item._id)}>Delete</button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default InventoryComponent;
-
-
-// src/components/Inventory.js
-import React, { useState, useEffect } from 'react';
 import Item from './Item';
-import './index.css';
 
 function Inventory() {
   const [items, setItems] = useState([]);
+  const [editingItem, setEditingItem] = useState(null); // State for the item being edited
+  const [isEditing, setIsEditing] = useState(false); // State for showing the edit form/modal
 
   useEffect(() => {
     fetchItems();
   }, []);
 
   const fetchItems = async () => {
-    // Replace this with your actual data fetching logic
-    // For example, making an API call to fetch items
     try {
-      const response = await fetch('/api/items'); // Adjust the URL to your API endpoint
+      const response = await fetch('/inventory'); 
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
       const data = await response.json();
       setItems(data);
     } catch (error) {
-      console.error('Error fetching items:', error);
+      console.error('Error fetching inventory:', error);
     }
   };
-
+  
   const handleEdit = (item) => {
-    // Logic to handle editing an item
-    console.log('Edit item:', item);
-    // You might open a modal or navigate to a different page to edit the item
+    setEditingItem(item); // Set the current item to be edited
+    setIsEditing(true); // Show the edit form/modal
   };
 
-  const handleDelete = async (itemId) => {
-    // Logic to handle deleting an item
+  const handleEditSubmit = async (updatedItem) => {
     try {
-      await fetch(`/api/items/${itemId}`, { method: 'DELETE' }); // Adjust the URL to your API endpoint
-      setItems(items.filter(item => item._id !== itemId));
+      const response = await fetch(`/equipment/${updatedItem._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedItem),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update item');
+      }
+      const data = await response.json();
+      setItems(items.map(item => (item._id === data._id ? data : item))); // Update the state with the edited item
+      setIsEditing(false); // Close the edit form/modal
+      setEditingItem(null); // Clear the editing item state
     } catch (error) {
-      console.error('Error deleting item:', error);
+      console.error('Error updating item:', error);
     }
   };
 
@@ -86,8 +59,19 @@ function Inventory() {
           onDelete={handleDelete}
         />
       ))}
+      {isEditing && (
+        <EditForm
+          item={editingItem}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setIsEditing(false)}
+        />
+      )}
     </div>
   );
 }
 
-export default Inventory;
+
+
+export default InventoryComponent;
+
+
