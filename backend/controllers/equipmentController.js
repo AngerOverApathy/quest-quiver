@@ -74,7 +74,39 @@ const equipmentController = {
     }
   },
 
-  //Fetch data from an external API
+  //Fetch data from an external API from multiple endpoints based on name
+  async fetchByName(req, res) {
+    const { name } = req.query; // Get the 'name' query parameter from the request URL
+    const baseUrl = 'https://www.dnd5eapi.co/api';
+    const endpoints = [
+      `${baseUrl}/equipment?name=${name}`,
+      `${baseUrl}/magic-items?name=${name}`,
+      `${baseUrl}/weapon-properties?name=${name}`
+    ];
+
+    try {
+      // Make requests to all endpoints
+      const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
+      const apiResponses = await Promise.allSettled(apiRequests);
+
+      // Combine results from successful responses
+      const results = apiResponses
+        .filter(response => response.status === 'fulfilled')
+        .map(response => response.value.data.results)
+        .flat();
+
+      if (results.length > 0) {
+        res.status(200).json({ results });
+      } else {
+        res.status(404).json({ message: 'No items found' });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ message: 'Failed to fetch data', error: error.message });
+    }
+  },
+
+  // Fetch data from an external API by index
   async fetchData(req, res) {
     const { index } = req.params; // Get index from the route parameters
     const baseUrl = 'https://www.dnd5eapi.co/api';
@@ -85,7 +117,6 @@ const equipmentController = {
     ];
 
     try {
-      // Try fetching data from each endpoint
       const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
       const apiResponses = await Promise.allSettled(apiRequests);
 

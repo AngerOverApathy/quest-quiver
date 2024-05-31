@@ -5,6 +5,7 @@ function Inventory() {
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null); // State for the item being edited
   const [isEditing, setIsEditing] = useState(false); // State for showing the edit form/modal
+  const [isCreating, setIsCreating] = useState(false); // State for creating a new item
 
   useEffect(() => {
     fetchItems();
@@ -26,7 +27,14 @@ function Inventory() {
   const handleEdit = (item) => {
     setEditingItem(item); // Set the current item to be edited
     setIsEditing(true); // Show the edit form/modal
+    setIsCreating(false); // Ensure we're not in creating mode
   };
+
+  const handleCreate = () => {
+    setEditingItem(null); // Clear any existing editing item
+    setIsCreating(true);
+    setIsEditing(true); // Use the same form for creating
+  }
 
   const handleEditSubmit = async (updatedItem) => {
     try {
@@ -49,8 +57,44 @@ function Inventory() {
     }
   };
 
+  const handleCreateSubmit = async (newItem) => {
+    try {
+      const response = await fetch('/equipment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newItem),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create item');
+      }
+      const data = await response.json();
+      setItems([...items, data]); // Add the new item to the state
+      setIsEditing(false); // Close the edit form/modal
+      setIsCreating(false); // Close the create form/modal
+    } catch (error) {
+      console.error('Error creating item:', error);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/equipment/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete item');
+      }
+      setItems(items.filter(item => item._id !== id)); // Remove the item from the state
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+
   return (
     <div className="inventory-container">
+      <button onClick={handleCreate}>Create New Item</button>
       {items.map(item => (
         <Item
           key={item._id}
@@ -62,8 +106,11 @@ function Inventory() {
       {isEditing && (
         <EditForm
           item={editingItem}
-          onSubmit={handleEditSubmit}
-          onCancel={() => setIsEditing(false)}
+          onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+          onCancel={() => {
+            setIsEditing(false);
+            setIsCreating(false);
+          }}
         />
       )}
     </div>
@@ -72,6 +119,6 @@ function Inventory() {
 
 
 
-export default InventoryComponent;
+export default Inventory;
 
 

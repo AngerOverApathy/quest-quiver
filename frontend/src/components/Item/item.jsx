@@ -54,10 +54,11 @@ function Item({ item, onDelete, onEdit }) {
       <button onClick={toggleDetails}>
         {showDetails ? 'Hide Details' : 'See More'}
       </button>
+      <button onClick={() => onCreate()}>Create an Item</button>
       <button onClick={() => onEdit(item)}>Edit</button>
       <button onClick={() => onDelete(item._id)}>Delete</button>
     </div>
   );
 }
 
-// export default Item;
+export default Item;
