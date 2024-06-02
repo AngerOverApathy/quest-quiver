@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 
 function Item({ item, onDelete, onEdit }) {
-  const [showDetails, setShowDetails] = React.useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  useEffect(() => {
+    console.log('Item details:', item); // Log the item object once when the component mounts
+  }, [item]);
 
   const toggleDetails = () => {
     setShowDetails(prev => !prev);
@@ -11,7 +15,8 @@ function Item({ item, onDelete, onEdit }) {
   return (
     <div className="item-container">
       <h3>{item.name}</h3>
-      <p>{item.description}</p>
+      {/* Conditionally render the description */}
+      {item.description && <p>{item.description}</p>}
       {showDetails && (
         <div>
             {/* Equipment Type */}
