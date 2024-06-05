@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import Item from './Item';
-//import EditForm from './EditForm'; // Assuming you have created this component
+import React, { useState } from 'react';
+// import EditForm from './EditForm';
+//import Item from './Item';
 
 function Inventory() {
   const [items, setItems] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
-  const [editingItem, setEditingItem] = useState(null); // State for the item being edited
-  const [isEditing, setIsEditing] = useState(false); // State for showing the edit form/modal
-  const [isCreating, setIsCreating] = useState(false); // State for creating a new item
+  const [editingItem, setEditingItem] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  const fetchItems = async () => {
-    try {
-      const response = await fetch('/inventory'); 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+  const fetchItemDetails = async (index) => {
+      try {
+        const response = await fetch(`/equipment/fetch/${index}`);
+        console.log(response); // Log the response
+        if (!response.ok) {
+          throw new Error('Failed to fetch item details');
+        }
+        const data = await response.json();
+        console.log(data); // Log the data
+        setSelectedItem(data);
+      } catch (error) {
+        console.error('Error fetching item details:', error);
       }
-      const data = await response.json();
-      setItems(data);
-    } catch (error) {
-      console.error('Error fetching inventory:', error);
-    }
-  };
+    };
 
   const handleEdit = (item) => {
-    setEditingItem(item); // Set the current item to be edited
-    setIsEditing(true); // Show the edit form/modal
-    setIsCreating(false); // Ensure we're not in creating mode
+    setEditingItem(item);
+    setIsEditing(true);
+    setIsCreating(false);
   };
 
   const handleCreate = () => {
-    setEditingItem(null); // Clear any existing editing item
+    setEditingItem(null);
     setIsCreating(true);
-    setIsEditing(true); // Use the same form for creating
+    setIsEditing(true);
   };
 
   const handleEditSubmit = async (updatedItem) => {
@@ -53,9 +51,9 @@ function Inventory() {
         throw new Error('Failed to update item');
       }
       const data = await response.json();
-      setItems(items.map(item => (item._id === data._id ? data : item))); // Update the state with the edited item
-      setIsEditing(false); // Close the edit form/modal
-      setEditingItem(null); // Clear the editing item state
+      setItems(items.map(item => (item._id === data._id ? data : item)));
+      setIsEditing(false);
+      setEditingItem(null);
     } catch (error) {
       console.error('Error updating item:', error);
     }
@@ -74,9 +72,9 @@ function Inventory() {
         throw new Error('Failed to create item');
       }
       const data = await response.json();
-      setItems([...items, data]); // Add the new item to the state
-      setIsEditing(false); // Close the edit form/modal
-      setIsCreating(false); // Close the create form/modal
+      setItems([...items, data]);
+      setIsEditing(false);
+      setIsCreating(false);
     } catch (error) {
       console.error('Error creating item:', error);
     }
@@ -90,35 +88,9 @@ function Inventory() {
       if (!response.ok) {
         throw new Error('Failed to delete item');
       }
-      setItems(items.filter(item => item._id !== id)); // Remove the item from the state
+      setItems(items.filter(item => item._id !== id));
     } catch (error) {
       console.error('Error deleting item:', error);
-    }
-  };
-
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(`/equipment/search?name=${searchQuery}`); // Call your backend endpoint
-      if (!response.ok) {
-        throw new Error('Failed to fetch search results');
-      }
-      const data = await response.json();
-      setSearchResults(data.results); // Adjust based on response structure
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-    }
-  };
-
-  const fetchItemDetails = async (index) => {
-    try {
-      const response = await fetch(`/equipment/fetch/${index}`); // Call your backend endpoint
-      if (!response.ok) {
-        throw new Error('Failed to fetch item details');
-      }
-      const data = await response.json();
-      setSelectedItem(data); // Store the selected item details
-    } catch (error) {
-      console.error('Error fetching item details:', error);
     }
   };
 
@@ -128,10 +100,10 @@ function Inventory() {
       <input
         type="text"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} // Update the search query state with user input
+        onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search for equipment"
       />
-      <button onClick={handleSearch}>Search</button> {/* Call handleSearch when the button is clicked */}
+      <button onClick={fetchItemDetails}>Search</button>
       <div>
         <h3>Search Results</h3>
         {searchResults.map(item => (
@@ -145,8 +117,8 @@ function Inventory() {
         <div>
           <h3>Item Details</h3>
           <p>Name: {selectedItem.name}</p>
-          <p>Description: {selectedItem.desc}</p>
-          <button onClick={() => /* logic to add item to inventory */}>Add to Inventory</button>
+          <p>Description: {selectedItem.desc.join(', ')}</p>
+          {/*<button onClick={() => logic to add item to inventory}>Add to Inventory</button>*/}
         </div>
       )}
       <div>

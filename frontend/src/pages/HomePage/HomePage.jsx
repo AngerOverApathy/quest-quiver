@@ -1,12 +1,13 @@
 import React from 'react';
+import Inventory from '../../components/Inventory/Inventory'
 
-const HomePage = () => {
-    return (
-        <div>
-            <h1>Welcome to the Home Page</h1>
-            {/* Add more content as needed */}
-        </div>
-    );
-};
+function HomePage() {
+  return (
+    <div className="homepage-container">
+      <h1>Welcome to Quest Quiver</h1>
+      <Inventory />
+    </div>
+  );
+}
 
 export default HomePage;

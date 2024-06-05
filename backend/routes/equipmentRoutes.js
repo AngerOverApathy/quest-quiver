@@ -4,7 +4,6 @@ const equipmentController = require('../controllers/equipmentController');
 const { protect } = require('../middleware/authMiddleware');
 
 //Routes
-router.get('/search', equipmentController.fetchByName);         // Route for searching equipment by name
 router.get('/fetch/:index', equipmentController.fetchData);     // Route for fetching detailed data by index
 
 router.post('/', protect, equipmentController.createEquipment);               // Create new equipment

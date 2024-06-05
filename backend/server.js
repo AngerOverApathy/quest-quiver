@@ -20,12 +20,6 @@ app.use(cors({
     credentials: true
 }));
 
-// Middleware to log CORS headers
-app.use((req, res, next) => {
-    console.log('CORS Headers Set:', res.getHeaders()['access-control-allow-origin']);
-    next();
-});
-
 // Import routes
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const userRoutes = require('./routes/userRoutes');
