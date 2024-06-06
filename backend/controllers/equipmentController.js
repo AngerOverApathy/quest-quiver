@@ -2,39 +2,40 @@ const axios = require('axios'); // Import Axios
 const Equipment = require('../models/equipmentSchema');
 
 const equipmentController = {
+
     // Fetch data from an external API by index
-    async fetchData(req, res) {
-      const { index } = req.params; // Get index from the route parameters
-      const baseUrl = 'https://www.dnd5eapi.co/api';
-      const endpoints = [
-        `${baseUrl}/equipment/${index}`,
-        `${baseUrl}/magic-items/${index}`,
-        `${baseUrl}/weapon-properties/${index}`
-      ];
-  
-      try {
-        console.log(`Fetching data for index: ${index}`); // Log the index being fetched
-        const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
-        const apiResponses = await Promise.allSettled(apiRequests);
-  
-        apiResponses.forEach((response, idx) => {
-          console.log(`Response from ${endpoints[idx]}:`, response); // Log each response
-        });
-  
-        const successfulResponse = apiResponses.find(response => response.status === 'fulfilled');
-  
-        if (successfulResponse) {
-          console.log('Successful response data:', successfulResponse.value.data); // Log the successful response data
-          res.status(200).json(successfulResponse.value.data);
-        } else {
-          console.log('No successful response found');
-          res.status(404).json({ message: 'Item not found' });
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).json({ message: 'Failed to fetch data', error: error.message });
+  async fetchData(req, res) {
+    const { index } = req.params; // Get index from the route parameters
+    const baseUrl = 'https://www.dnd5eapi.co/api';
+    const endpoints = [
+      `${baseUrl}/equipment/${index}`,
+      `${baseUrl}/magic-items/${index}`,
+      `${baseUrl}/weapon-properties/${index}`
+    ];
+
+    try {
+      console.log(`Fetching data for index: ${index}`); // Log the index being fetched
+      const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
+      const apiResponses = await Promise.allSettled(apiRequests);
+
+      apiResponses.forEach((response, idx) => {
+        console.log(`Response from ${endpoints[idx]}:`, response); // Log each response
+      });
+
+      const successfulResponse = apiResponses.find(response => response.status === 'fulfilled');
+
+      if (successfulResponse) {
+        console.log('Successful response data:', successfulResponse.value.data); // Log the successful response data
+        res.status(200).json(successfulResponse.value.data);
+      } else {
+        console.log('No successful response found');
+        res.status(404).json({ message: 'Item not found' });
       }
-    },
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ message: 'Failed to fetch data', error: error.message });
+    }
+  },
   
   // Create a new equipment item
   async createEquipment(req, res) {
