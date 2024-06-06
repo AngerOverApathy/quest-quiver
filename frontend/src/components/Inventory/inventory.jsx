@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ItemForm from '../ItemForm/ItemForm';
 
 function Inventory() {
   const [items, setItems] = useState([]);
@@ -43,12 +44,14 @@ function Inventory() {
     setEditingItem(item);
     setIsEditing(true);
     setIsCreating(false);
+    setSelectedItem(null); // Reset selectedItem
   };
 
   const handleCreate = () => {
     setEditingItem(null);
     setIsCreating(true);
     setIsEditing(true);
+    setSelectedItem(null); // Reset selectedItem
   };
 
   const handleEditSubmit = async (updatedItem) => {
@@ -107,6 +110,13 @@ function Inventory() {
     }
   };
 
+  const handleCancel = () => {
+    setIsEditing(false);
+    setIsCreating(false);
+    setEditingItem(null);
+    setSelectedItem(null);
+  };
+
   return (
     <div className="inventory-container">
       <button onClick={handleCreate}>Create New Item</button>
@@ -145,15 +155,12 @@ function Inventory() {
       </div>
       {isEditing && (
         <div>
-          <h3>Edit Item</h3>
-          {/* <EditForm
+          <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
+          <ItemForm
             item={editingItem}
             onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
-            onCancel={() => {
-              setIsEditing(false);
-              setIsCreating(false);
-            }}
-          /> */}
+            onCancel={handleCancel}
+          />
         </div>
       )}
     </div>
