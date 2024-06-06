@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import EditForm from './EditForm';
-//import Item from './Item';
 
 function Inventory() {
   const [items, setItems] = useState([]);
@@ -12,19 +10,34 @@ function Inventory() {
   const [isCreating, setIsCreating] = useState(false);
 
   const fetchItemDetails = async (index) => {
-      try {
-        const response = await fetch(`/equipment/fetch/${index}`);
-        console.log(response); // Log the response
-        if (!response.ok) {
-          throw new Error('Failed to fetch item details');
-        }
-        const data = await response.json();
-        console.log(data); // Log the data
-        setSelectedItem(data);
-      } catch (error) {
-        console.error('Error fetching item details:', error);
+    try {
+      const url = `http://localhost:5050/equipment/fetch/${index}`;
+      console.log(`Fetching details from URL: ${url}`);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      console.log(`Response: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch item details');
       }
-    };
+      const data = await response.json();
+      console.log('Fetched item details:', data);
+      setSelectedItem(data);
+    } catch (error) {
+      console.error('Error fetching item details:', error);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      await fetchItemDetails(searchQuery);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -103,7 +116,7 @@ function Inventory() {
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search for equipment"
       />
-      <button onClick={fetchItemDetails}>Search</button>
+      <button onClick={handleSearch}>Search</button>
       <div>
         <h3>Search Results</h3>
         {searchResults.map(item => (
@@ -117,30 +130,31 @@ function Inventory() {
         <div>
           <h3>Item Details</h3>
           <p>Name: {selectedItem.name}</p>
-          <p>Description: {selectedItem.desc.join(', ')}</p>
-          {/*<button onClick={() => logic to add item to inventory}>Add to Inventory</button>*/}
+          <p>Description: {selectedItem.desc?.join(', ')}</p>
         </div>
       )}
       <div>
         <h3>Inventory Items</h3>
         {items.map(item => (
-          <Item
-            key={item._id}
-            item={item}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <div key={item._id}>
+            <h4>{item.name}</h4>
+            <button onClick={() => handleEdit(item)}>Edit</button>
+            <button onClick={() => handleDelete(item._id)}>Delete</button>
+          </div>
         ))}
       </div>
       {isEditing && (
-        <EditForm
-          item={editingItem}
-          onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
-          onCancel={() => {
-            setIsEditing(false);
-            setIsCreating(false);
-          }}
-        />
+        <div>
+          <h3>Edit Item</h3>
+          {/* <EditForm
+            item={editingItem}
+            onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+            onCancel={() => {
+              setIsEditing(false);
+              setIsCreating(false);
+            }}
+          /> */}
+        </div>
       )}
     </div>
   );
