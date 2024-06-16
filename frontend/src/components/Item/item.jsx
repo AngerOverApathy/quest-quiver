@@ -4,9 +4,9 @@ import './index.css';
 function Item({ item, onDelete, onEdit }) {
   const [showDetails, setShowDetails] = useState(false);
 
-  useEffect(() => {
-    console.log('Item details:', item); // Log the item object once when the component mounts
-  }, [item]);
+  // useEffect(() => {
+  //   console.log('Item details:', item); // Log the item object once when the component mounts
+  // }, [item]);
 
   const toggleDetails = () => {
     setShowDetails(prev => !prev);
