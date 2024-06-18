@@ -19,7 +19,7 @@ const mapFetchedItemToUserItem = (fetchedItem) => {
     acquiredDate: new Date(), // Default to current date
     customizations: '', // Default to empty string
     quantity: 1, // Default to 1
-    equipmentId: fetchedItem._id // Ensure this is a valid ObjectId
+    equipmentId: fetchedItem.index // Use a valid identifier from the fetched item
   };
 };
 
@@ -102,32 +102,29 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
-      // Map the fetched item to the user item structure
-      const userItem = mapFetchedItemToUserItem(item);
-      console.log('Mapped user item:', userItem); // Log the mapped item
-  
+
+      console.log('Adding item to inventory:', item); // Log the item object
+
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ item: userItem }),
+        body: JSON.stringify({ item }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to add item to inventory');
       }
-  
+
       const data = await response.json();
       setItems([...items, data]);
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };
+  };  
   
-
   const handleEdit = (item) => {
     setEditingItem(item);
     setIsEditing(true);

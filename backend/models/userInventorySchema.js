@@ -9,7 +9,8 @@ const userInventorySchema = new Schema({
     },
     equipmentId: { 
         type: Schema.Types.ObjectId, 
-        ref: 'Equipment' 
+        ref: 'Equipment',
+        required: true
     },
     quantity: { 
         type: Number, 
