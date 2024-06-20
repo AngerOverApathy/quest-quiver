@@ -5,7 +5,7 @@ import Item from '../Item/Item';
 const mapFetchedItemToUserItem = (fetchedItem) => {
   return {
     name: fetchedItem.name,
-    description: fetchedItem.desc.join(' '), // Assuming desc is an array
+    description: fetchedItem.desc.join(' '), // Joining description array
     equipmentType: fetchedItem.equipment_category.name,
     equipmentCategory: fetchedItem.category_range,
     weaponCategory: fetchedItem.weapon_category,
@@ -15,7 +15,7 @@ const mapFetchedItemToUserItem = (fetchedItem) => {
     properties: fetchedItem.properties.map(prop => prop.name),
     cost: fetchedItem.cost,
     weight: fetchedItem.weight,
-    rarity: fetchedItem.rarity || '', // Assuming rarity might be present
+    rarity: fetchedItem.rarity ? fetchedItem.rarity.name : '', // Accessing rarity name
     acquiredDate: new Date(), // Default to current date
     customizations: '', // Default to empty string
     quantity: 1, // Default to 1
