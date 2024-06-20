@@ -20,6 +20,7 @@ const inventoryController = {
       const userId = req.user.id;
       const { item } = req.body;
 
+      // Correct the field name to equipmentId
       const newItem = new UserInventory({
         user: userId,
         equipmentId: item,
