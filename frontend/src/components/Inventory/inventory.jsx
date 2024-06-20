@@ -2,6 +2,27 @@ import React, { useState, useEffect } from 'react';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
 
+const mapFetchedItemToUserItem = (fetchedItem) => {
+  return {
+    name: fetchedItem.name,
+    description: fetchedItem.desc.join(' '), // Assuming desc is an array
+    equipmentType: fetchedItem.equipment_category.name,
+    equipmentCategory: fetchedItem.category_range,
+    weaponCategory: fetchedItem.weapon_category,
+    damage: fetchedItem.damage ? fetchedItem.damage.damage_dice : '',
+    damageType: fetchedItem.damage ? fetchedItem.damage.damage_type.name : '',
+    range: fetchedItem.range ? `Normal: ${fetchedItem.range.normal}` : '',
+    properties: fetchedItem.properties.map(prop => prop.name),
+    cost: fetchedItem.cost,
+    weight: fetchedItem.weight,
+    rarity: fetchedItem.rarity || '', // Assuming rarity might be present
+    acquiredDate: new Date(), // Default to current date
+    customizations: '', // Default to empty string
+    quantity: 1, // Default to 1
+    equipmentId: fetchedItem._id // Ensure this is a valid ObjectId
+  };
+};
+
 function Inventory() {
   const [items, setItems] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -13,8 +34,9 @@ function Inventory() {
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
+    console.log('useEffect triggered - fetching user inventory');
     fetchUserInventory();
-  }, []);
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const fetchUserInventory = async () => {
     try {
@@ -65,7 +87,6 @@ function Inventory() {
       console.error('Error fetching item details:', error);
     }
   };
-  
 
   const handleSearch = async () => {
     try {
@@ -82,7 +103,9 @@ function Inventory() {
         throw new Error('User is not authenticated');
       }
   
-      console.log('Adding item to inventory:', item); // Log the item object
+      // Map the fetched item to the user item structure
+      const userItem = mapFetchedItemToUserItem(item);
+      console.log('Mapped user item:', userItem); // Log the mapped item
   
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
@@ -90,7 +113,7 @@ function Inventory() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ item }),
+        body: JSON.stringify({ item: userItem }),
       });
   
       if (!response.ok) {
@@ -102,7 +125,8 @@ function Inventory() {
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };  
+  };
+  
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -180,13 +204,13 @@ function Inventory() {
     setEditingItem(null);
     setSelectedItem(null);
     setShowDetails(false); // Hide the details
-  }; 
+  };
 
   return (
     <div className="inventory-container">
       {/* Button to create a new item */}
       <button onClick={handleCreate}>Create New Item</button>
-  
+
       {/* Search input and button */}
       <input
         type="text"
@@ -195,7 +219,7 @@ function Inventory() {
         placeholder="Search for equipment"
       />
       <button onClick={handleSearch}>Search</button>
-  
+
       {/* Display search results */}
       <div>
         <h3>Search Results</h3>
@@ -207,7 +231,7 @@ function Inventory() {
           </div>
         ))}
       </div>
-  
+
       {/* Display details of the selected item */}
       {showDetails && selectedItem && (
         <div>
@@ -241,7 +265,6 @@ function Inventory() {
         </div>
       )}
 
-  
       {/* Display list of inventory items */}
       <div>
         <h3>Inventory Items</h3>
@@ -254,7 +277,7 @@ function Inventory() {
           />
         ))}
       </div>
-  
+
       {/* Display the form for editing or creating an item */}
       {isEditing && (
         <div>

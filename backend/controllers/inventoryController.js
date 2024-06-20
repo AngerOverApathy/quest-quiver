@@ -6,7 +6,6 @@ const inventoryController = {
   async getUserInventory(req, res) {
     try {
       const userId = req.user.id;
-      // Correct the field name to equipmentId
       const userInventory = await UserInventory.find({ user: userId }).populate('equipmentId');
       res.status(200).json(userInventory);
     } catch (error) {
@@ -21,7 +20,6 @@ const inventoryController = {
       const userId = req.user.id;
       const { item } = req.body;
 
-      // Correct the field name to equipmentId
       const newItem = new UserInventory({
         user: userId,
         equipmentId: item,
