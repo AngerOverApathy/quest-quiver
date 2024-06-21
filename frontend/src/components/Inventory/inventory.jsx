@@ -44,7 +44,7 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-
+  
       const response = await fetch('http://localhost:5050/inventory', {
         method: 'GET',
         headers: {
@@ -52,18 +52,17 @@ function Inventory() {
           'Authorization': `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch user inventory');
       }
-
+  
       const data = await response.json();
-      console.log('Fetched user inventory:', data);
       setItems(data);
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
-  };
+  };  
 
   const fetchItemDetails = async (index) => {
     try {
