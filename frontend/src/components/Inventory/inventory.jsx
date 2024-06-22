@@ -67,25 +67,22 @@ function Inventory() {
   const fetchItemDetails = async (index) => {
     try {
       const url = `http://localhost:5050/equipment/fetch/${index}`;
-      console.log(`Fetching details from URL: ${url}`);
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
         },
       });
-      console.log(`Response: ${response.status} ${response.statusText}`);
       if (!response.ok) {
         throw new Error('Failed to fetch item details');
       }
       const data = await response.json();
-      console.log('Fetched item details:', data);
-      setSelectedItem(data); // Set the selected item with the fetched data
-      setShowDetails(true);  // Show the details
+      setSelectedItem(data);
+      setShowDetails(true);
     } catch (error) {
       console.error('Error fetching item details:', error);
     }
-  };
+  };  
 
   const handleSearch = async () => {
     try {
