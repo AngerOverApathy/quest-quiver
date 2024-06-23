@@ -99,10 +99,7 @@ function Inventory() {
         throw new Error('User is not authenticated');
       }
   
-      // Map the fetched item to the user item structure
       const userItem = mapFetchedItemToUserItem(item);
-      console.log('Mapped user item:', userItem); // Log the mapped item
-  
       if (!userItem.equipmentId) {
         throw new Error('Invalid equipmentId');
       }
@@ -113,7 +110,7 @@ function Inventory() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(userItem), // Directly send the mapped item
+        body: JSON.stringify(userItem),
       });
   
       if (!response.ok) {
@@ -126,6 +123,7 @@ function Inventory() {
       console.error('Error adding item to inventory:', error);
     }
   };
+  
     
   const handleEdit = (item) => {
     setEditingItem(item);
