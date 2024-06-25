@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-function ItemForm({ item, onSubmit, onCancel }) {
+const ItemForm = ({ item, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     category_range: '',
     damage: { damage_dice: '', damage_type: { name: '' } },
     two_handed_damage: { damage_dice: '', damage_type: { name: '' } },
-    range: { normal: '', long: '' },
-    throw_range: { normal: '', long: '' },
+    range: { normal: null, long: null },
+    throw_range: { normal: null, long: null },
     properties: [{ name: '' }],
     equipment_category: { name: '' },
     rarity: { name: '' },
@@ -21,65 +21,32 @@ function ItemForm({ item, onSubmit, onCancel }) {
 
   useEffect(() => {
     if (item) {
-      setFormData({
-        ...item,
-        damage: item.damage || { damage_dice: '', damage_type: { name: '' } },
-        two_handed_damage: item.two_handed_damage || { damage_dice: '', damage_type: { name: '' } },
-        range: item.range || { normal: '', long: '' },
-        throw_range: item.throw_range || { normal: '', long: '' },
-        properties: item.properties.length ? item.properties : [{ name: '' }],
-        equipment_category: item.equipment_category || { name: '' },
-        rarity: item.rarity || { name: '' },
-        cost: item.cost || { quantity: 0, unit: '' },
-        effects: item.effects.length ? item.effects : [{ effectName: '', effectDescription: '' }],
-        requires_attunement: item.requires_attunement || false,
-        magical: item.magical || false
-      });
+      setFormData(item);
     }
   }, [item]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const val = type === 'checkbox' ? checked : value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: val
-    }));
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleNestedChange = (e, field, subField) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+  const handleNestedChange = (e, field, nestedField) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
       [field]: {
-        ...prevData[field],
-        [subField || name]: value
+        ...formData[field],
+        [nestedField]: value
       }
-    }));
+    });
   };
 
-  const handleArrayChange = (e, index, field) => {
-    const { name, value } = e.target;
-    const updatedArray = [...formData[field]];
-    updatedArray[index][name] = value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: updatedArray
-    }));
-  };
-
-  const handleAddProperty = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      properties: [...prevData.properties, { name: '' }]
-    }));
-  };
-
-  const handleAddEffect = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      effects: [...prevData.effects, { effectName: '', effectDescription: '' }]
-    }));
+  const handleArrayChange = (e, field, index, nestedField) => {
+    const { value } = e.target;
+    const updatedArray = formData[field].map((item, i) => (
+      i === index ? { ...item, [nestedField]: value } : item
+    ));
+    setFormData({ ...formData, [field]: updatedArray });
   };
 
   const handleSubmit = (e) => {
@@ -89,202 +56,112 @@ function ItemForm({ item, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Category Range</label>
-        <input
-          type="text"
-          name="category_range"
-          value={formData.category_range}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Damage</label>
-        <input
-          type="text"
-          name="damage_dice"
-          value={formData.damage.damage_dice}
-          onChange={(e) => handleNestedChange(e, 'damage')}
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Damage Type"
-          value={formData.damage.damage_type.name}
-          onChange={(e) => handleNestedChange(e, 'damage', 'damage_type')}
-        />
-      </div>
-      <div>
-        <label>Two-Handed Damage</label>
-        <input
-          type="text"
-          name="damage_dice"
-          value={formData.two_handed_damage.damage_dice}
-          onChange={(e) => handleNestedChange(e, 'two_handed_damage')}
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Damage Type"
-          value={formData.two_handed_damage.damage_type.name}
-          onChange={(e) => handleNestedChange(e, 'two_handed_damage', 'damage_type')}
-        />
-      </div>
-      <div>
-        <label>Range</label>
-        <input
-          type="number"
-          name="normal"
-          placeholder="Normal Range"
-          value={formData.range.normal}
-          onChange={(e) => handleNestedChange(e, 'range')}
-        />
-        <input
-          type="number"
-          name="long"
-          placeholder="Long Range"
-          value={formData.range.long}
-          onChange={(e) => handleNestedChange(e, 'range')}
-        />
-      </div>
-      <div>
-        <label>Throw Range</label>
-        <input
-          type="number"
-          name="normal"
-          placeholder="Normal Throw Range"
-          value={formData.throw_range.normal}
-          onChange={(e) => handleNestedChange(e, 'throw_range')}
-        />
-        <input
-          type="number"
-          name="long"
-          placeholder="Long Throw Range"
-          value={formData.throw_range.long}
-          onChange={(e) => handleNestedChange(e, 'throw_range')}
-        />
-      </div>
-      <div>
-        <label>Properties</label>
+      <label>
+        Name:
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+      </label>
+      <label>
+        Category Range:
+        <input type="text" name="category_range" value={formData.category_range} onChange={handleChange} />
+      </label>
+      <label>
+        Damage Dice:
+        <input type="text" name="damage_dice" value={formData.damage.damage_dice} onChange={(e) => handleNestedChange(e, 'damage', 'damage_dice')} />
+      </label>
+      <label>
+        Damage Type:
+        <input type="text" name="damage_type" value={formData.damage.damage_type.name} onChange={(e) => handleNestedChange(e, 'damage', 'damage_type.name')} />
+      </label>
+      <label>
+        Two-Handed Damage Dice:
+        <input type="text" name="two_handed_damage_dice" value={formData.two_handed_damage.damage_dice} onChange={(e) => handleNestedChange(e, 'two_handed_damage', 'damage_dice')} />
+      </label>
+      <label>
+        Two-Handed Damage Type:
+        <input type="text" name="two_handed_damage_type" value={formData.two_handed_damage.damage_type.name} onChange={(e) => handleNestedChange(e, 'two_handed_damage', 'damage_type.name')} />
+      </label>
+      <label>
+        Range (Normal):
+        <input type="number" name="range_normal" value={formData.range.normal} onChange={(e) => handleNestedChange(e, 'range', 'normal')} />
+      </label>
+      <label>
+        Range (Long):
+        <input type="number" name="range_long" value={formData.range.long} onChange={(e) => handleNestedChange(e, 'range', 'long')} />
+      </label>
+      <label>
+        Throw Range (Normal):
+        <input type="number" name="throw_range_normal" value={formData.throw_range.normal} onChange={(e) => handleNestedChange(e, 'throw_range', 'normal')} />
+      </label>
+      <label>
+        Throw Range (Long):
+        <input type="number" name="throw_range_long" value={formData.throw_range.long} onChange={(e) => handleNestedChange(e, 'throw_range', 'long')} />
+      </label>
+      <label>
+        Properties:
         {formData.properties.map((property, index) => (
           <input
             key={index}
             type="text"
-            name="name"
-            placeholder="Property"
             value={property.name}
-            onChange={(e) => handleArrayChange(e, index, 'properties')}
+            onChange={(e) => handleArrayChange(e, 'properties', index, 'name')}
           />
         ))}
-        <button type="button" onClick={handleAddProperty}>Add Property</button>
-      </div>
-      <div>
-        <label>Equipment Category</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.equipment_category.name}
-          onChange={(e) => handleNestedChange(e, 'equipment_category')}
-        />
-      </div>
-      <div>
-        <label>Rarity</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.rarity.name}
-          onChange={(e) => handleNestedChange(e, 'rarity')}
-        />
-      </div>
-      <div>
-        <label>Requires Attunement</label>
-        <input
-          type="checkbox"
-          name="requires_attunement"
-          checked={formData.requires_attunement}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Weight</label>
-        <input
-          type="number"
-          name="weight"
-          value={formData.weight}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Cost</label>
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={formData.cost.quantity}
-          onChange={(e) => handleNestedChange(e, 'cost')}
-        />
-        <input
-          type="text"
-          name="unit"
-          placeholder="Unit"
-          value={formData.cost.unit}
-          onChange={(e) => handleNestedChange(e, 'cost')}
-        />
-      </div>
-      <div>
-        <label>Description</label>
-        <textarea
-          name="desc"
-          value={formData.desc.join('\n')}
-          onChange={(e) => setFormData({ ...formData, desc: e.target.value.split('\n') })}
-        />
-      </div>
-      <div>
-        <label>Magical</label>
-        <input
-          type="checkbox"
-          name="magical"
-          checked={formData.magical}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        <label>Effects</label>
+      </label>
+      <label>
+        Equipment Category:
+        <input type="text" name="equipment_category" value={formData.equipment_category.name} onChange={(e) => handleNestedChange(e, 'equipment_category', 'name')} />
+      </label>
+      <label>
+        Rarity:
+        <input type="text" name="rarity" value={formData.rarity.name} onChange={(e) => handleNestedChange(e, 'rarity', 'name')} />
+      </label>
+      <label>
+        Requires Attunement:
+        <input type="checkbox" name="requires_attunement" checked={formData.requires_attunement} onChange={(e) => setFormData({ ...formData, requires_attunement: e.target.checked })} />
+      </label>
+      <label>
+        Weight:
+        <input type="number" name="weight" value={formData.weight} onChange={handleChange} />
+      </label>
+      <label>
+        Cost Quantity:
+        <input type="number" name="cost_quantity" value={formData.cost.quantity} onChange={(e) => handleNestedChange(e, 'cost', 'quantity')} />
+      </label>
+      <label>
+        Cost Unit:
+        <input type="text" name="cost_unit" value={formData.cost.unit} onChange={(e) => handleNestedChange(e, 'cost', 'unit')} />
+      </label>
+      <label>
+        Description:
+        <input type="text" name="desc" value={formData.desc.join(', ')} onChange={(e) => setFormData({ ...formData, desc: e.target.value.split(', ') })} />
+      </label>
+      <label>
+        Magical:
+        <input type="checkbox" name="magical" checked={formData.magical} onChange={(e) => setFormData({ ...formData, magical: e.target.checked })} />
+      </label>
+      <label>
+        Effects:
         {formData.effects.map((effect, index) => (
           <div key={index}>
             <input
               type="text"
-              name="effectName"
-              placeholder="Effect Name"
+              name="effect_name"
               value={effect.effectName}
-              onChange={(e) => handleArrayChange(e, index, 'effects')}
+              onChange={(e) => handleArrayChange(e, 'effects', index, 'effectName')}
             />
-            <textarea
-              name="effectDescription"
-              placeholder="Effect Description"
+            <input
+              type="text"
+              name="effect_description"
               value={effect.effectDescription}
-              onChange={(e) => handleArrayChange(e, index, 'effects')}
+              onChange={(e) => handleArrayChange(e, 'effects', index, 'effectDescription')}
             />
           </div>
         ))}
-        <button type="button" onClick={handleAddEffect}>Add Effect</button>
-      </div>
-      <div>
-        <button type="submit">{item ? 'Update' : 'Create'}</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
-      </div>
+      </label>
+      <button type="submit">Save</button>
+      <button type="button" onClick={onCancel}>Cancel</button>
     </form>
   );
-}
+};
 
 export default ItemForm;

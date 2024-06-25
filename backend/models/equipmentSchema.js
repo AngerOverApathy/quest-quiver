@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const equipmentSchema = new Schema({
+  index: { type: String, unique: true, sparse: true },  // Unique identifier from the API, sparse allows it to be optional
   name: { type: String, required: true },  // Name of the item
   category_range: { type: String, default: '' },
 

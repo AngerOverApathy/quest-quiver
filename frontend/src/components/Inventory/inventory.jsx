@@ -62,7 +62,7 @@ function Inventory() {
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
-  };  
+  };
 
   const fetchItemDetails = async (index) => {
     try {
@@ -82,7 +82,7 @@ function Inventory() {
     } catch (error) {
       console.error('Error fetching item details:', error);
     }
-  };  
+  };
 
   const handleSearch = async () => {
     try {
@@ -100,9 +100,6 @@ function Inventory() {
       }
   
       const userItem = mapFetchedItemToUserItem(item);
-      if (!userItem.equipmentId) {
-        throw new Error('Invalid equipmentId');
-      }
   
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
@@ -110,7 +107,7 @@ function Inventory() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(userItem),
+        body: JSON.stringify({ item: userItem }), // Ensure the item is correctly structured
       });
   
       if (!response.ok) {
@@ -123,8 +120,7 @@ function Inventory() {
       console.error('Error adding item to inventory:', error);
     }
   };
-  
-    
+
   const handleEdit = (item) => {
     setEditingItem(item);
     setIsEditing(true);
@@ -141,7 +137,7 @@ function Inventory() {
 
   const handleEditSubmit = async (updatedItem) => {
     try {
-      const response = await fetch(`/equipment/${updatedItem._id}`, {
+      const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +158,7 @@ function Inventory() {
 
   const handleCreateSubmit = async (newItem) => {
     try {
-      const response = await fetch('/equipment', {
+      const response = await fetch('http://localhost:5050/equipment/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -183,7 +179,7 @@ function Inventory() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/equipment/${id}`, {
+      const response = await fetch(`http://localhost:5050/equipment/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
