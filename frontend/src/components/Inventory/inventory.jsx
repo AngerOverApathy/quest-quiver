@@ -121,41 +121,6 @@ function Inventory() {
     }
   };
 
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setIsEditing(true);
-    setIsCreating(false);
-    setSelectedItem(null); // Reset selectedItem
-  };
-
-  const handleCreate = () => {
-    setEditingItem(null);
-    setIsCreating(true);
-    setIsEditing(true);
-    setSelectedItem(null); // Reset selectedItem
-  };
-
-  const handleEditSubmit = async (updatedItem) => {
-    try {
-      const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedItem),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update item');
-      }
-      const data = await response.json();
-      setItems(items.map(item => (item._id === data._id ? data : item)));
-      setIsEditing(false);
-      setEditingItem(null);
-    } catch (error) {
-      console.error('Error updating item:', error);
-    }
-  };
-
   const handleCreateSubmit = async (newItem) => {
     try {
       const token = localStorage.getItem('token'); // Ensure the user is authenticated
@@ -183,10 +148,45 @@ function Inventory() {
     }
   };  
 
+  const handleEditSubmit = async (updatedItem) => {
+    try {
+      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      if (!token) {
+        throw new Error('User is not authenticated');
+      }
+  
+      const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include authorization token
+        },
+        body: JSON.stringify(updatedItem),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update item');
+      }
+      const data = await response.json();
+      setItems(items.map(item => (item._id === data._id ? data : item)));
+      setIsEditing(false);
+      setEditingItem(null);
+    } catch (error) {
+      console.error('Error updating item:', error);
+    }
+  };  
+
   const handleDelete = async (id) => {
     try {
+      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      if (!token) {
+        throw new Error('User is not authenticated');
+      }
+  
       const response = await fetch(`http://localhost:5050/equipment/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Include authorization token
+        },
       });
       if (!response.ok) {
         throw new Error('Failed to delete item');
@@ -195,6 +195,20 @@ function Inventory() {
     } catch (error) {
       console.error('Error deleting item:', error);
     }
+  };  
+
+  const handleCreate = () => {
+    setEditingItem(null);
+    setIsCreating(true);
+    setIsEditing(true);
+    setSelectedItem(null); // Reset selectedItem
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setIsEditing(true);
+    setIsCreating(false);
+    setSelectedItem(null); // Reset selectedItem
   };
 
   const handleCancel = () => {
