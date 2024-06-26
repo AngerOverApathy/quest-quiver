@@ -173,7 +173,8 @@ function Inventory() {
     } catch (error) {
       console.error('Error updating item:', error);
     }
-  };  
+  }; 
+  
 
   const handleDelete = async (id) => {
     try {
@@ -195,13 +196,6 @@ function Inventory() {
     } catch (error) {
       console.error('Error deleting item:', error);
     }
-  };  
-
-  const handleCreate = () => {
-    setEditingItem(null);
-    setIsCreating(true);
-    setIsEditing(true);
-    setSelectedItem(null); // Reset selectedItem
   };
 
   const handleEdit = (item) => {
@@ -211,6 +205,13 @@ function Inventory() {
     setSelectedItem(null); // Reset selectedItem
   };
 
+  const handleCreate = () => {
+    setEditingItem(null);
+    setIsCreating(true);
+    setIsEditing(true);
+    setSelectedItem(null); // Reset selectedItem
+  };
+  
   const handleCancel = () => {
     setIsEditing(false);
     setIsCreating(false);
