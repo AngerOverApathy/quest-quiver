@@ -158,10 +158,16 @@ function Inventory() {
 
   const handleCreateSubmit = async (newItem) => {
     try {
-      const response = await fetch('http://localhost:5050/equipment/create', {
+      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      if (!token) {
+        throw new Error('User is not authenticated');
+      }
+  
+      const response = await fetch('http://localhost:5050/equipment', { // Correct endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include authorization token
         },
         body: JSON.stringify(newItem),
       });
@@ -175,7 +181,7 @@ function Inventory() {
     } catch (error) {
       console.error('Error creating item:', error);
     }
-  };
+  };  
 
   const handleDelete = async (id) => {
     try {
@@ -273,15 +279,15 @@ function Inventory() {
 
       {/* Display the form for editing or creating an item */}
       {isEditing && (
-        <div>
-          <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
-          <ItemForm
-            item={editingItem}
-            onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
-            onCancel={handleCancel}
-          />
-        </div>
-      )}
+      <div>
+        <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
+        <ItemForm
+          item={editingItem}
+          onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+          onCancel={handleCancel}
+        />
+      </div>
+    )}
     </div>
   );
 }

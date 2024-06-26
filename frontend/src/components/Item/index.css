@@ -6,12 +6,13 @@
   }
   
   .item-container h3 {
-    color: #333;
+    color: #ffffff;
   }
   
   .item-container p {
     font-size: 14px;
-    color: #666;
+    color: #ffffff;
+    font-weight: bolder;
   }
   
   button {
