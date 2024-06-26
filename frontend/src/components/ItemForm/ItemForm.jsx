@@ -6,32 +6,22 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
     category_range: '',
     damage: { damage_dice: '', damage_type: { name: '' } },
     two_handed_damage: { damage_dice: '', damage_type: { name: '' } },
-    range: { normal: '', long: '' },
-    throw_range: { normal: '', long: '' },
+    range: { normal: null, long: null },
+    throw_range: { normal: null, long: null },
     properties: [{ name: '' }],
     equipment_category: { name: '' },
     rarity: { name: '' },
     requires_attunement: false,
-    weight: '',
-    cost: { quantity: '', unit: '' },
-    desc: '',
+    weight: 0,
+    cost: { quantity: 0, unit: '' },
+    desc: [],
     magical: false,
     effects: [{ effectName: '', effectDescription: '' }]
   });
 
   useEffect(() => {
     if (item) {
-      setFormData({
-        ...item,
-        desc: item.desc.join(', '), // Join array into string for input field
-        properties: item.properties.length > 0 ? item.properties : [{ name: '' }],
-        effects: item.effects.length > 0 ? item.effects : [{ effectName: '', effectDescription: '' }],
-        range: { ...item.range, normal: item.range.normal || '', long: item.range.long || '' },
-        throw_range: { ...item.throw_range, normal: item.throw_range.normal || '', long: item.throw_range.long || '' },
-        damage: { ...item.damage, damage_dice: item.damage.damage_dice || '', damage_type: { name: item.damage.damage_type.name || '' } },
-        two_handed_damage: { ...item.two_handed_damage, damage_dice: item.two_handed_damage.damage_dice || '', damage_type: { name: item.two_handed_damage.damage_type.name || '' } },
-        cost: { ...item.cost, quantity: item.cost.quantity || '', unit: item.cost.unit || '' },
-      });
+      setFormData(item);
     }
   }, [item]);
 
@@ -61,13 +51,7 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const processedData = {
-      ...formData,
-      desc: formData.desc.split(', '), // Split string back into array
-      properties: formData.properties.map(prop => ({ name: prop.name })),
-      effects: formData.effects.map(effect => ({ effectName: effect.effectName, effectDescription: effect.effectDescription })),
-    };
-    onSubmit(processedData);
+    onSubmit(formData);
   };
 
   return (
@@ -149,7 +133,7 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
       </label>
       <label>
         Description:
-        <input type="text" name="desc" value={formData.desc} onChange={handleChange} />
+        <input type="text" name="desc" value={formData.desc.join(', ')} onChange={(e) => setFormData({ ...formData, desc: e.target.value.split(', ') })} />
       </label>
       <label>
         Magical:

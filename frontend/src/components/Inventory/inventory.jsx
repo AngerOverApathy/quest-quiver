@@ -155,6 +155,9 @@ function Inventory() {
         throw new Error('User is not authenticated');
       }
   
+      // Log the updated item
+      console.log('Updated item:', updatedItem);
+  
       const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
@@ -163,19 +166,29 @@ function Inventory() {
         },
         body: JSON.stringify(updatedItem),
       });
+  
+      // Log the response status
+      console.log('Response status:', response.status);
+  
       if (!response.ok) {
+        const errorDetails = await response.json(); // Get the error details from the response
+        console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
+  
       const data = await response.json();
+  
+      // Log the updated data
+      console.log('Updated data:', data);
+  
       setItems(items.map(item => (item._id === data._id ? data : item)));
       setIsEditing(false);
       setEditingItem(null);
     } catch (error) {
       console.error('Error updating item:', error);
     }
-  }; 
+  };
   
-
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token'); // Ensure the user is authenticated
