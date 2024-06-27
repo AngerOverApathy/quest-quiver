@@ -59,6 +59,7 @@ function Inventory() {
   
       const data = await response.json();
       setItems(data);
+      console.log('Fetched user inventory:', data);
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }

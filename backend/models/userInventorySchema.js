@@ -11,6 +11,7 @@ const userInventorySchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Equipment' 
     },
+    //equip properties
     quantity: { 
         type: Number, 
         default: 1 
