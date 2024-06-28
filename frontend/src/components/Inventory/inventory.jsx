@@ -12,7 +12,7 @@ const mapFetchedItemToUserItem = (fetchedItem) => {
     damage: fetchedItem.damage ? fetchedItem.damage.damage_dice : '',
     damageType: fetchedItem.damage ? fetchedItem.damage.damage_type.name : '',
     range: fetchedItem.range ? `Normal: ${fetchedItem.range.normal}` : '',
-    properties: fetchedItem.properties.map(prop => prop.name),
+    properties: fetchedItem.properties.map(prop => ({ name: prop })), // Transforming properties to correct format
     cost: fetchedItem.cost,
     weight: fetchedItem.weight,
     rarity: fetchedItem.rarity ? fetchedItem.rarity.name : '', // Accessing rarity name
@@ -116,11 +116,12 @@ function Inventory() {
       }
   
       const data = await response.json();
-      setItems([...items, data]);
+      setItems(prevItems => [...prevItems, data]); // Using the functional form to ensure state is updated correctly
+      console.log('Added item to inventory:', data); // Logging the added item
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };
+  };  
 
   const handleCreateSubmit = async (newItem) => {
     try {
