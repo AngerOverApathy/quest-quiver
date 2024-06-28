@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Define the sub-schema for properties
-const propertySchema = new Schema({
-  name: { type: String, default: '' }
-});
+// // Define the sub-schema for properties
+// const propertySchema = new Schema({
+//   name: { type: String, default: '' }
+// });
+ // properties: [propertySchema],  // Use embedded schema for properties
+  // equipment_category: {
+  //   name: { type: String, default: '' }
+  // },
 
 // Define the main schema for equipment
 const equipmentSchema = new Schema({
@@ -31,10 +35,11 @@ const equipmentSchema = new Schema({
     normal: { type: Number, default: null },
     long: { type: Number, default: null }
   },
-  properties: [propertySchema],  // Use embedded schema for properties
-  equipment_category: {
-    name: { type: String, default: '' }
-  },
+  properties: [
+    {
+      name: String,
+    },
+  ],
   rarity: {
     name: { type: String, default: '' }
   },

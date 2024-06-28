@@ -12,7 +12,7 @@ const mapFetchedItemToUserItem = (fetchedItem) => {
     damage: fetchedItem.damage ? fetchedItem.damage.damage_dice : '',
     damageType: fetchedItem.damage ? fetchedItem.damage.damage_type.name : '',
     range: fetchedItem.range ? `Normal: ${fetchedItem.range.normal}` : '',
-    properties: fetchedItem.properties.map(prop => ({ name: prop })), // Transforming properties to correct format
+    properties: fetchedItem.properties.map(prop => ({ name: prop.name })), // Extract only the name field from each property
     cost: fetchedItem.cost,
     weight: fetchedItem.weight,
     rarity: fetchedItem.rarity ? fetchedItem.rarity.name : '', // Accessing rarity name
