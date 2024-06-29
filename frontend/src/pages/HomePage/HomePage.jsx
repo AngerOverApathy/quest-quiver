@@ -1,10 +1,12 @@
 import React from 'react';
 import Inventory from '../../components/Inventory/Inventory'
+import Navbar from '../../components/Navbar/Navbar'
 
 function HomePage() {
   return (
     <div className="homepage-container">
-      <h1>Welcome to Quest Quiver</h1>
+      <h1>Welcome to Dimensional Depot</h1>
+      <Navbar />
       <Inventory />
     </div>
   );

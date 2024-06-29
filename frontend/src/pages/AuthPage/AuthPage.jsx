@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Login from '../../components/Login/Login';
 import Register from '../../components/Register/Register';
+import './index.css';
 
 const AuthPage = () => {
     // State to track whether the user is in "Register" mode or "Login" mode
