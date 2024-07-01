@@ -108,7 +108,7 @@ function Inventory() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ item: userItem }), // Ensure the item is correctly structured
+        body: JSON.stringify({ item: userItem }),
       });
   
       if (!response.ok) {
@@ -116,25 +116,25 @@ function Inventory() {
       }
   
       const data = await response.json();
-      setItems(prevItems => [...prevItems, data]); // Using the functional form to ensure state is updated correctly
-      console.log('Added item to inventory:', data); // Logging the added item
+      console.log('Added item to inventory:', data); // Log the added item
+      setItems(prevItems => [...prevItems, data]); // Update state to include new item
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };  
+  };
 
   const handleCreateSubmit = async (newItem) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
   
-      const response = await fetch('http://localhost:5050/equipment', { // Correct endpoint
+      const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(newItem),
       });
@@ -148,39 +148,36 @@ function Inventory() {
     } catch (error) {
       console.error('Error creating item:', error);
     }
-  };  
+  };
 
   const handleEditSubmit = async (updatedItem) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
   
-      // Log the updated item
       console.log('Updated item:', updatedItem);
   
       const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedItem),
       });
   
-      // Log the response status
       console.log('Response status:', response.status);
   
       if (!response.ok) {
-        const errorDetails = await response.json(); // Get the error details from the response
+        const errorDetails = await response.json();
         console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
   
       const data = await response.json();
   
-      // Log the updated data
       console.log('Updated data:', data);
   
       setItems(items.map(item => (item._id === data._id ? data : item)));
@@ -190,10 +187,10 @@ function Inventory() {
       console.error('Error updating item:', error);
     }
   };
-  
+
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
@@ -201,7 +198,7 @@ function Inventory() {
       const response = await fetch(`http://localhost:5050/equipment/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -217,30 +214,32 @@ function Inventory() {
     setEditingItem(item);
     setIsEditing(true);
     setIsCreating(false);
-    setSelectedItem(null); // Reset selectedItem
+    setSelectedItem(null);
   };
 
   const handleCreate = () => {
     setEditingItem(null);
     setIsCreating(true);
     setIsEditing(true);
-    setSelectedItem(null); // Reset selectedItem
+    setSelectedItem(null);
   };
-  
+
   const handleCancel = () => {
     setIsEditing(false);
     setIsCreating(false);
     setEditingItem(null);
     setSelectedItem(null);
-    setShowDetails(false); // Hide the details
+    setShowDetails(false);
   };
+
+  useEffect(() => {
+    console.log('Current items:', items); // Log current items to debug state updates
+  }, [items]);
 
   return (
     <div className="inventory-container">
-      {/* Button to create a new item */}
       <button onClick={handleCreate}>Create New Item</button>
 
-      {/* Search input and button */}
       <input
         type="text"
         value={searchQuery}
@@ -249,19 +248,17 @@ function Inventory() {
       />
       <button onClick={handleSearch}>Search</button>
 
-      {/* Display search results */}
       <div>
         <h3>Search Results</h3>
         {searchResults.map(item => (
           <div key={item.index}>
             <h4>{item.name}</h4>
             <button onClick={() => fetchItemDetails(item.index)}>View Details</button>
-            <button onClick={() => handleAddToInventory(item)}>Add to Inventory</button> {/* Add to Inventory Button */}
+            <button onClick={() => handleAddToInventory(item)}>Add to Inventory</button>
           </div>
         ))}
       </div>
 
-      {/* Display details of the selected item */}
       {showDetails && selectedItem && (
         <div>
           <h3>Item Details</h3>
@@ -290,11 +287,10 @@ function Inventory() {
           {selectedItem.properties && selectedItem.properties.length > 0 && (
             <p>Properties: {selectedItem.properties.map(prop => prop.name).join(', ')}</p>
           )}
-          <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button> {/* Add to Inventory Button */}
+          <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button>
         </div>
       )}
 
-      {/* Display list of inventory items */}
       <div>
         <h3>Inventory Items</h3>
         {items.map(item => (
@@ -307,17 +303,16 @@ function Inventory() {
         ))}
       </div>
 
-      {/* Display the form for editing or creating an item */}
       {isEditing && (
-      <div>
-        <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
-        <ItemForm
-          item={editingItem}
-          onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
-          onCancel={handleCancel}
-        />
-      </div>
-    )}
+        <div>
+          <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
+          <ItemForm
+            item={editingItem}
+            onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -33,7 +33,7 @@ function Item({ item, onDelete, onEdit }) {
             <p><strong>Throw Range:</strong> Normal: {equipment.throw_range.normal}, Long: {equipment.throw_range.long}</p>
           )}
           {equipment.properties && equipment.properties.length > 0 && (
-            <p><strong>Properties:</strong> {equipment.properties.map(prop => prop.name).join(', ')}</p>
+            <p><strong>Properties:</strong> {equipment.properties.map(prop => prop && prop.name).join(', ')}</p>
           )}
           {equipment.cost && <p><strong>Cost:</strong> {equipment.cost.quantity} {equipment.cost.unit}</p>}
           {equipment.weight && <p><strong>Weight:</strong> {equipment.weight} lbs</p>}
@@ -46,7 +46,7 @@ function Item({ item, onDelete, onEdit }) {
             <div>
               <strong>Effects:</strong>
               {equipment.effects.map((effect, index) => (
-                <p key={index}>{effect.effectName}: {effect.effectDescription}</p>
+                effect && <p key={index}>{effect.effectName}: {effect.effectDescription}</p>
               ))}
             </div>
           )}
