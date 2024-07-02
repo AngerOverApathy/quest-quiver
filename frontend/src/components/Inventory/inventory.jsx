@@ -2,26 +2,26 @@ import React, { useState, useEffect } from 'react';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
 
-const mapFetchedItemToUserItem = (fetchedItem) => {
+function mapFetchedItemToUserItem(item) {
   return {
-    name: fetchedItem.name,
-    description: fetchedItem.desc.join(' '), // Joining description array
-    equipmentType: fetchedItem.equipment_category.name,
-    equipmentCategory: fetchedItem.category_range,
-    weaponCategory: fetchedItem.weapon_category,
-    damage: fetchedItem.damage ? fetchedItem.damage.damage_dice : '',
-    damageType: fetchedItem.damage ? fetchedItem.damage.damage_type.name : '',
-    range: fetchedItem.range ? `Normal: ${fetchedItem.range.normal}` : '',
-    properties: fetchedItem.properties.map(prop => ({ name: prop.name })), // Extract only the name field from each property
-    cost: fetchedItem.cost,
-    weight: fetchedItem.weight,
-    rarity: fetchedItem.rarity ? fetchedItem.rarity.name : '', // Accessing rarity name
-    acquiredDate: new Date(), // Default to current date
-    customizations: '', // Default to empty string
-    quantity: 1, // Default to 1
-    equipmentId: fetchedItem.index // Use a valid identifier from the fetched item
+    name: item.name,
+    description: item.desc ? item.desc.join(' ') : '',
+    equipmentType: item.equipment_category ? item.equipment_category.name : '',
+    equipmentCategory: item.category_range || '',
+    weaponCategory: item.weapon_category || '',
+    damage: item.damage ? item.damage.damage_dice : '',
+    damageType: item.damage ? item.damage.damage_type.name : '',
+    range: item.range ? `Normal: ${item.range.normal}` : '',
+    properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names
+    cost: item.cost,
+    weight: item.weight,
+    rarity: item.rarity ? item.rarity.name : '',
+    acquiredDate: new Date(),
+    customizations: '',
+    quantity: 1,
+    equipmentId: item.index
   };
-};
+}
 
 function Inventory() {
   const [items, setItems] = useState([]);

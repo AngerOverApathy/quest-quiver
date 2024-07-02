@@ -40,7 +40,7 @@ const inventoryController = {
             two_handed_damage: item.two_handed_damage,
             range: item.range,
             throw_range: item.throw_range,
-            properties: item.properties.map(prop => prop.name),  // Extract only the names
+            properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names, default to empty array if undefined
             cost: item.cost,
             weight: item.weight,
             rarity: item.rarity,
@@ -62,7 +62,7 @@ const inventoryController = {
           two_handed_damage: item.two_handed_damage,
           range: item.range,
           throw_range: item.throw_range,
-          properties: item.properties.map(prop => prop.name),  // Extract only the names
+          properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names, default to empty array if undefined
           cost: item.cost,
           weight: item.weight,
           rarity: item.rarity,
