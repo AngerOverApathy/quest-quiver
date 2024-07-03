@@ -1,19 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// // Define the sub-schema for properties
-// const propertySchema = new Schema({
-//   name: { type: String, default: '' }
-// });
- // properties: [propertySchema],  // Use embedded schema for properties
-  // equipment_category: {
-  //   name: { type: String, default: '' }
-  // },
-
-// Define the main schema for equipment
 const equipmentSchema = new Schema({
-  index: { type: String, unique: true, sparse: true },  // Unique identifier from the API, sparse allows it to be optional
-  name: { type: String, required: true },  // Name of the item
+  index: { type: String, unique: true, sparse: true },
+  name: { type: String, required: true },
   category_range: { type: String, default: '' },
   damage: {
     damage_dice: { type: String, default: '' },
@@ -35,11 +25,7 @@ const equipmentSchema = new Schema({
     normal: { type: Number, default: null },
     long: { type: Number, default: null }
   },
-  properties: [
-    {
-      name: String,
-    },
-  ],
+  properties: [String],  // Array of strings to store property names
   rarity: {
     name: { type: String, default: '' }
   },
@@ -49,9 +35,9 @@ const equipmentSchema = new Schema({
     quantity: { type: Number, default: 0 },
     unit: { type: String, default: '' }
   },
-  desc: { type: [String], default: [] },  // Descriptions array
+  desc: { type: [String], default: [] },
   magical: { type: Boolean, default: false },
-  effects: [{ 
+  effects: [{
     effectName: { type: String, default: '' },
     effectDescription: { type: String, default: '' }
   }]

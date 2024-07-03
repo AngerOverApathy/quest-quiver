@@ -14,28 +14,22 @@ const inventoryController = {
       res.status(500).json({ message: "Failed to fetch user inventory" });
     }
   },
-  
+
   // Add to inventory
   async addToInventory(req, res) {
     try {
       const userId = req.user.id;
       const { item } = req.body;
 
-      // Log the received item to inspect its structure
-      console.log('Received item:', JSON.stringify(item, null, 2));
-
       let equipment;
       if (item.index) {
-        // Use the item index as a unique identifier for API items
         const itemIndex = item.index;
         if (!itemIndex) {
           throw new Error('Item index is missing');
         }
 
-        // Check if the equipment exists in the collection
         equipment = await Equipment.findOne({ index: itemIndex });
         if (!equipment) {
-          // Create a new equipment entry if it doesn't exist
           equipment = new Equipment({
             index: itemIndex,
             name: item.name,
@@ -46,7 +40,7 @@ const inventoryController = {
             two_handed_damage: item.two_handed_damage,
             range: item.range,
             throw_range: item.throw_range,
-            properties: item.properties.map(prop => ({ name: prop })), // Adjusted to use the sub-schema
+            properties: item.properties.map(prop => prop.name),  // Extract only the names
             cost: item.cost,
             weight: item.weight,
             rarity: item.rarity,
@@ -58,7 +52,6 @@ const inventoryController = {
           await equipment.save();
         }
       } else {
-        // Generate a new ObjectId for user-created items
         equipment = new Equipment({
           _id: new mongoose.Types.ObjectId(),
           name: item.name,
@@ -69,7 +62,7 @@ const inventoryController = {
           two_handed_damage: item.two_handed_damage,
           range: item.range,
           throw_range: item.throw_range,
-          properties: item.properties.map(prop => ({ name: prop })), // Adjusted to use the sub-schema
+          properties: item.properties.map(prop => prop.name),  // Extract only the names
           cost: item.cost,
           weight: item.weight,
           rarity: item.rarity,
@@ -81,10 +74,9 @@ const inventoryController = {
         await equipment.save();
       }
 
-      // Save to user's inventory
       const newItem = new UserInventory({
         user: userId,
-        equipmentId: equipment._id, // Reference the MongoDB ObjectId
+        equipmentId: equipment._id,
         quantity: item.quantity || 1,
         customizations: item.customizations || '',
         acquiredDate: new Date()
