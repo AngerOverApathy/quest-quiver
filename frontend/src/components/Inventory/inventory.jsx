@@ -2,26 +2,26 @@ import React, { useState, useEffect } from 'react';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
 
-const mapFetchedItemToUserItem = (fetchedItem) => {
+function mapFetchedItemToUserItem(item) {
   return {
-    name: fetchedItem.name,
-    description: fetchedItem.desc.join(' '), // Joining description array
-    equipmentType: fetchedItem.equipment_category.name,
-    equipmentCategory: fetchedItem.category_range,
-    weaponCategory: fetchedItem.weapon_category,
-    damage: fetchedItem.damage ? fetchedItem.damage.damage_dice : '',
-    damageType: fetchedItem.damage ? fetchedItem.damage.damage_type.name : '',
-    range: fetchedItem.range ? `Normal: ${fetchedItem.range.normal}` : '',
-    properties: fetchedItem.properties.map(prop => prop.name),
-    cost: fetchedItem.cost,
-    weight: fetchedItem.weight,
-    rarity: fetchedItem.rarity ? fetchedItem.rarity.name : '', // Accessing rarity name
-    acquiredDate: new Date(), // Default to current date
-    customizations: '', // Default to empty string
-    quantity: 1, // Default to 1
-    equipmentId: fetchedItem.index // Use a valid identifier from the fetched item
+    name: item.name,
+    description: item.desc ? item.desc.join(' ') : '',
+    equipmentType: item.equipment_category ? item.equipment_category.name : '',
+    equipmentCategory: item.category_range || '',
+    weaponCategory: item.weapon_category || '',
+    damage: item.damage ? item.damage.damage_dice : '',
+    damageType: item.damage ? item.damage.damage_type.name : '',
+    range: item.range ? `Normal: ${item.range.normal}` : '',
+    properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names
+    cost: item.cost,
+    weight: item.weight,
+    rarity: item.rarity ? item.rarity.name : '',
+    acquiredDate: new Date(),
+    customizations: '',
+    quantity: 1,
+    equipmentId: item.index
   };
-};
+}
 
 function Inventory() {
   const [items, setItems] = useState([]);
@@ -44,7 +44,7 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
+
       const response = await fetch('http://localhost:5050/inventory', {
         method: 'GET',
         headers: {
@@ -52,13 +52,14 @@ function Inventory() {
           'Authorization': `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to fetch user inventory');
       }
-  
+
       const data = await response.json();
-      setItems(data);
+      console.log('Fetched user inventory:', data);
+      setItems(Array.isArray(data) ? data : []); // Ensure data is an array
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
@@ -107,7 +108,7 @@ function Inventory() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ item: userItem }), // Ensure the item is correctly structured
+        body: JSON.stringify({ item: userItem }),
       });
   
       if (!response.ok) {
@@ -115,24 +116,32 @@ function Inventory() {
       }
   
       const data = await response.json();
-      setItems([...items, data]);
+      console.log('Added item to inventory:', data); // Log the added item
+      setItems(prevItems => Array.isArray(prevItems) ? [...prevItems, data] : [data]); // Ensure state is updated as an array
+      fetchUserInventory(); // Fetch updated inventory
+  
+      // Clear search results, query, and item details view
+      setSearchResults([]);
+      setSearchQuery('');
+      setSelectedItem(null);
+      setShowDetails(false);
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };
+  };  
 
   const handleCreateSubmit = async (newItem) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
-      const response = await fetch('http://localhost:5050/equipment', { // Correct endpoint
+
+      const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(newItem),
       });
@@ -140,72 +149,69 @@ function Inventory() {
         throw new Error('Failed to create item');
       }
       const data = await response.json();
-      setItems([...items, data]);
+      setItems(prevItems => Array.isArray(prevItems) ? [...prevItems, data] : [data]); // Ensure state is updated as an array
       setIsEditing(false);
       setIsCreating(false);
     } catch (error) {
       console.error('Error creating item:', error);
     }
-  };  
+  };
 
   const handleEditSubmit = async (updatedItem) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
-      // Log the updated item
+
       console.log('Updated item:', updatedItem);
-  
+
       const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(updatedItem),
       });
-  
-      // Log the response status
+
       console.log('Response status:', response.status);
-  
+
       if (!response.ok) {
-        const errorDetails = await response.json(); // Get the error details from the response
+        const errorDetails = await response.json();
         console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
-  
+
       const data = await response.json();
-  
-      // Log the updated data
+
       console.log('Updated data:', data);
-  
-      setItems(items.map(item => (item._id === data._id ? data : item)));
+
+      setItems(prevItems => prevItems.map(item => (item._id === data._id ? data : item)));
       setIsEditing(false);
       setEditingItem(null);
     } catch (error) {
       console.error('Error updating item:', error);
     }
   };
-  
+
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem('token'); // Ensure the user is authenticated
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
+
       const response = await fetch(`http://localhost:5050/equipment/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`, // Include authorization token
+          'Authorization': `Bearer ${token}`,
         },
       });
       if (!response.ok) {
         throw new Error('Failed to delete item');
       }
-      setItems(items.filter(item => item._id !== id));
+      setItems(prevItems => prevItems.filter(item => item._id !== id));
     } catch (error) {
       console.error('Error deleting item:', error);
     }
@@ -215,30 +221,32 @@ function Inventory() {
     setEditingItem(item);
     setIsEditing(true);
     setIsCreating(false);
-    setSelectedItem(null); // Reset selectedItem
+    setSelectedItem(null);
   };
 
   const handleCreate = () => {
     setEditingItem(null);
     setIsCreating(true);
     setIsEditing(true);
-    setSelectedItem(null); // Reset selectedItem
+    setSelectedItem(null);
   };
-  
+
   const handleCancel = () => {
     setIsEditing(false);
     setIsCreating(false);
     setEditingItem(null);
     setSelectedItem(null);
-    setShowDetails(false); // Hide the details
+    setShowDetails(false);
   };
+
+  useEffect(() => {
+    console.log('Current items:', items); // Log current items to debug state updates
+  }, [items]);
 
   return (
     <div className="inventory-container">
-      {/* Button to create a new item */}
       <button onClick={handleCreate}>Create New Item</button>
 
-      {/* Search input and button */}
       <input
         type="text"
         value={searchQuery}
@@ -247,19 +255,17 @@ function Inventory() {
       />
       <button onClick={handleSearch}>Search</button>
 
-      {/* Display search results */}
       <div>
         <h3>Search Results</h3>
         {searchResults.map(item => (
           <div key={item.index}>
             <h4>{item.name}</h4>
             <button onClick={() => fetchItemDetails(item.index)}>View Details</button>
-            <button onClick={() => handleAddToInventory(item)}>Add to Inventory</button> {/* Add to Inventory Button */}
+            <button onClick={() => handleAddToInventory(item)}>Add to Inventory</button>
           </div>
         ))}
       </div>
 
-      {/* Display details of the selected item */}
       {showDetails && selectedItem && (
         <div>
           <h3>Item Details</h3>
@@ -288,34 +294,36 @@ function Inventory() {
           {selectedItem.properties && selectedItem.properties.length > 0 && (
             <p>Properties: {selectedItem.properties.map(prop => prop.name).join(', ')}</p>
           )}
-          <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button> {/* Add to Inventory Button */}
+          <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button>
         </div>
       )}
 
-      {/* Display list of inventory items */}
       <div>
         <h3>Inventory Items</h3>
-        {items.map(item => (
-          <Item
-            key={item._id}
-            item={item}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        ))}
+        {Array.isArray(items) && items.length > 0 ? (
+          items.map(item => (
+            <Item
+              key={item._id}
+              item={item}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          ))
+        ) : (
+          <p>No items in inventory</p>
+        )}
       </div>
 
-      {/* Display the form for editing or creating an item */}
       {isEditing && (
-      <div>
-        <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
-        <ItemForm
-          item={editingItem}
-          onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
-          onCancel={handleCancel}
-        />
-      </div>
-    )}
+        <div>
+          <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
+          <ItemForm
+            item={editingItem}
+            onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
     </div>
   );
 }

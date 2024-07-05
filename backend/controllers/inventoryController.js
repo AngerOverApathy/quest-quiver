@@ -7,113 +7,100 @@ const inventoryController = {
   async getUserInventory(req, res) {
     try {
       const userId = req.user.id;
-      const userInventory = await UserInventory.find({ user: userId }).populate('equipmentId');
-      res.status(200).json(userInventory);
+      const userInventory = await UserInventory.findOne({ user: userId }).populate('items.equipmentId');
+      res.status(200).json(userInventory ? userInventory.items : []);
     } catch (error) {
       console.error("Error fetching user inventory:", error);
       res.status(500).json({ message: "Failed to fetch user inventory" });
     }
   },
- 
-  //Add to inventory
-async addToInventory(req, res) {
-  try {
-    const userId = req.user.id;
-    const { item } = req.body;
 
-    // Log the received item to inspect its structure
-    console.log('Received item:', JSON.stringify(item, null, 2));
+  // Add to inventory
+  async addToInventory(req, res) {
+    try {
+      const userId = req.user.id;
+      const { item } = req.body;
 
-    let equipment;
-    if (item.index) {
-      // Use the item index as a unique identifier for API items
-      const itemIndex = item.index;
-      if (!itemIndex) {
-        throw new Error('Item index is missing');
-      }
-
-      // Check if the equipment exists in the collection
-      equipment = await Equipment.findOne({ index: itemIndex });
+      // Find or create the equipment
+      let equipment = await Equipment.findOne({ index: item.index });
       if (!equipment) {
-        // Create a new equipment entry if it doesn't exist
         equipment = new Equipment({
-          index: itemIndex,
+          index: item.index,
           name: item.name,
           equipment_category: item.equipment_category,
           category_range: item.category_range,
           weapon_category: item.weapon_category,
-          damage: item.damage,
-          two_handed_damage: item.two_handed_damage,
-          range: item.range,
-          throw_range: item.throw_range,
-          properties: item.properties,
+          damage: item.damage || { damage_dice: '', damage_type: { name: '' } },
+          two_handed_damage: item.two_handed_damage || { damage_dice: '', damage_type: { name: '' } },
+          range: item.range || { normal: null, long: null },
+          throw_range: item.throw_range || { normal: null, long: null },
+          properties: item.properties.map(prop => prop.name),
           cost: item.cost,
           weight: item.weight,
           rarity: item.rarity,
           requires_attunement: item.requires_attunement,
           magical: item.magical,
-          effects: item.effects,
-          desc: item.desc
+          effects: item.effects || [],
+          desc: item.desc || []
         });
         await equipment.save();
       }
-    } else {
-      // Generate a new ObjectId for user-created items
-      equipment = new Equipment({
-        _id: new mongoose.Types.ObjectId(),
-        name: item.name,
-        equipment_category: item.equipment_category,
-        category_range: item.category_range,
-        weapon_category: item.weapon_category,
-        damage: item.damage,
-        two_handed_damage: item.two_handed_damage,
-        range: item.range,
-        throw_range: item.throw_range,
-        properties: item.properties,
-        cost: item.cost,
-        weight: item.weight,
-        rarity: item.rarity,
-        requires_attunement: item.requires_attunement,
-        magical: item.magical,
-        effects: item.effects,
-        desc: item.desc
-      });
-      await equipment.save();
+
+      // Find the user's inventory
+      let userInventory = await UserInventory.findOne({ user: userId });
+
+      if (userInventory) {
+        // Add the new item to the existing inventory
+        userInventory.items.push({
+          equipmentId: equipment._id,
+          quantity: item.quantity || 1,
+          customizations: item.customizations || '',
+          acquiredDate: new Date()
+        });
+      } else {
+        // Create a new inventory for the user
+        userInventory = new UserInventory({
+          user: userId,
+          items: [{
+            equipmentId: equipment._id,
+            quantity: item.quantity || 1,
+            customizations: item.customizations || '',
+            acquiredDate: new Date()
+          }]
+        });
+      }
+
+      await userInventory.save();
+      res.status(201).json(userInventory.items);
+    } catch (error) {
+      console.error("Error adding item to inventory:", error);
+      res.status(500).json({ message: "Failed to add item to inventory", error: error.message });
     }
-
-    // Save to user's inventory
-    const newItem = new UserInventory({
-      user: userId,
-      equipmentId: equipment._id, // Reference the MongoDB ObjectId
-      quantity: item.quantity || 1,
-      customizations: item.customizations || '',
-      acquiredDate: new Date()
-    });
-
-    const savedItem = await newItem.save();
-    console.log('Saved item to inventory:', JSON.stringify(savedItem, null, 2)); // Log the saved item object
-    res.status(201).json(savedItem);
-  } catch (error) {
-    console.error("Error adding item to inventory:", error);
-    res.status(500).json({ message: "Failed to add item to inventory", error: error.message });
-  }
-},
+  },
 
   // Update an inventory item
   async updateInventoryItem(req, res) {
     try {
-      const { quantity, customizations } = req.body;
-      const inventoryItem = await UserInventory.findByIdAndUpdate(
-        req.params.id,
-        { quantity, customizations },
-        { new: true, runValidators: true }  // Return the updated object and run schema validations
-      );
+      const userId = req.user.id;
+      const { itemId, quantity, customizations } = req.body;
 
-      if (!inventoryItem) {
-        return res.status(404).json({ message: 'Inventory item not found' });
+      // Find the user's inventory
+      const userInventory = await UserInventory.findOne({ user: userId });
+      if (!userInventory) {
+        return res.status(404).json({ message: 'Inventory not found' });
       }
 
-      res.status(200).json(inventoryItem);
+      // Find the item in the inventory and update it
+      const item = userInventory.items.id(itemId);
+      if (item) {
+        item.quantity = quantity;
+        item.customizations = customizations;
+      } else {
+        return res.status(404).json({ message: 'Item not found in inventory' });
+      }
+
+      await userInventory.save();
+      res.status(200).json(item);
     } catch (error) {
       console.error("Error updating inventory item:", error);
       res.status(400).json({ message: "Failed to update inventory item", error: error.message });
@@ -123,12 +110,24 @@ async addToInventory(req, res) {
   // Delete an inventory item
   async deleteInventoryItem(req, res) {
     try {
-      const deletedItem = await UserInventory.findByIdAndDelete(req.params.id);
+      const userId = req.user.id;
+      const { itemId } = req.params;
 
-      if (!deletedItem) {
-        return res.status(404).json({ message: 'Inventory item not found' });
+      // Find the user's inventory
+      const userInventory = await UserInventory.findOne({ user: userId });
+      if (!userInventory) {
+        return res.status(404).json({ message: 'Inventory not found' });
       }
 
+      // Find the item in the inventory and remove it
+      const item = userInventory.items.id(itemId);
+      if (item) {
+        item.remove();
+      } else {
+        return res.status(404).json({ message: 'Item not found in inventory' });
+      }
+
+      await userInventory.save();
       res.status(200).json({ message: 'Inventory item deleted successfully' });
     } catch (error) {
       console.error("Error deleting inventory item:", error);
