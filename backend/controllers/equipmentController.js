@@ -36,22 +36,86 @@ const equipmentController = {
       res.status(500).json({ message: 'Failed to fetch data', error: error.message });
     }
   },
-  
+
   // Create a new equipment item
-  async createEquipment(req, res) {
-    try {
-      const newEquipment = new Equipment(req.body);
-      const savedEquipment = await newEquipment.save();
-      res.status(201).json(savedEquipment);
-    } catch (error) {
-      console.error("Error when creating equipment:", error);
-      res.status(400).json({
-        message: 'Failed to create new equipment',
-        error: error.message, // Provide more specific error message
-        stack: error.stack    // Optionally include the stack trace for deeper analysis
-      });
-    }
-  },
+  // Create a new equipment item
+async createEquipment(req, res) {
+  try {
+    const {
+      name,
+      category_range,
+      damage,
+      two_handed_damage,
+      range,
+      throw_range,
+      properties,
+      equipment_category,
+      rarity,
+      requires_attunement,
+      weight,
+      cost,
+      desc,
+      magical,
+      effects
+    } = req.body;
+
+    // Ensure that the data matches the schema structure
+    const newEquipment = new Equipment({
+      name,
+      category_range,
+      damage: {
+        damage_dice: damage?.damage_dice || '',
+        damage_type: {
+          name: damage?.damage_type?.name || ''
+        }
+      },
+      two_handed_damage: {
+        damage_dice: two_handed_damage?.damage_dice || '',
+        damage_type: {
+          name: two_handed_damage?.damage_type?.name || ''
+        }
+      },
+      range: {
+        normal: range?.normal || null,
+        long: range?.long || null
+      },
+      throw_range: {
+        normal: throw_range?.normal || null,
+        long: throw_range?.long || null
+      },
+      properties: properties ? properties.map(prop => ({ name: prop.name })) : [],
+      equipment_category: {
+        name: equipment_category?.name || ''
+      },
+      rarity: {
+        name: rarity?.name || ''
+      },
+      requires_attunement,
+      weight,
+      cost: {
+        quantity: cost?.quantity || 0,
+        unit: cost?.unit || ''
+      },
+      desc,
+      magical,
+      effects: effects ? effects.map(effect => ({
+        effectName: effect.effectName || '',
+        effectDescription: effect.effectDescription || ''
+      })) : []
+    });
+
+    const savedEquipment = await newEquipment.save();
+    res.status(201).json(savedEquipment);
+  } catch (error) {
+    console.error("Error when creating equipment:", error);
+    res.status(400).json({
+      message: 'Failed to create new equipment',
+      error: error.message,
+      stack: error.stack
+    });
+  }
+},
+
 
   // Get all equipment items
   async getAllEquipment(req, res) {
