@@ -62,21 +62,3 @@
 // }
 
 // export default Item;
-
-import React from 'react';
-
-const Item = ({ item, onDelete, onEdit }) => {
-  console.log('Rendering Item:', item); // Log item props to debug
-
-  return (
-    <div className="item-container">
-      <h4>{item.name}</h4>
-      <p>Description: {item.description}</p>
-      <p>Type: {item.equipmentType}</p>
-      <button onClick={() => onEdit(item)}>Edit</button>
-      <button onClick={() => onDelete(item._id)}>Delete</button>
-    </div>
-  );
-};
-
-export default Item;
