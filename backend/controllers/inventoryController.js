@@ -74,15 +74,25 @@ const inventoryController = {
         await equipment.save();
       }
 
-      const newItem = new UserInventory({
-        user: userId,
-        equipmentId: equipment._id,
-        quantity: item.quantity || 1,
-        customizations: item.customizations || '',
-        acquiredDate: new Date()
-      });
+      // Check if the item already exists in the user's inventory
+      let inventoryItem = await UserInventory.findOne({ user: userId, equipmentId: equipment._id });
 
-      const savedItem = await newItem.save();
+      if (inventoryItem) {
+        // If item exists, update the quantity
+        inventoryItem.quantity += item.quantity || 1;
+        inventoryItem.customizations = item.customizations || '';
+      } else {
+        // If item does not exist, create a new entry
+        inventoryItem = new UserInventory({
+          user: userId,
+          equipmentId: equipment._id,
+          quantity: item.quantity || 1,
+          customizations: item.customizations || '',
+          acquiredDate: new Date()
+        });
+      }
+
+      const savedItem = await inventoryItem.save();
       console.log('Saved item to inventory:', JSON.stringify(savedItem, null, 2)); // Log the saved item object
       res.status(201).json(savedItem);
     } catch (error) {
