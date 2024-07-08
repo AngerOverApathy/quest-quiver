@@ -78,6 +78,7 @@ function Inventory() {
         throw new Error('Failed to fetch item details');
       }
       const data = await response.json();
+      console.log('Fetched item details:', data);
       setSelectedItem(data);
       setShowDetails(true);
     } catch (error) {
@@ -93,6 +94,44 @@ function Inventory() {
     }
   };
 
+  // const handleAddToInventory = async (item) => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     if (!token) {
+  //       throw new Error('User is not authenticated');
+  //     }
+  
+  //     const userItem = mapFetchedItemToUserItem(item);
+  
+  //     const response = await fetch('http://localhost:5050/inventory/add', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({ item: userItem }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error('Failed to add item to inventory');
+  //     }
+  
+  //     const data = await response.json();
+  //     console.log('Added item to inventory:', data); // Log the added item
+  
+  //     // Refetch the inventory to update the UI
+  //     await fetchUserInventory();
+  
+  //     // Clear search results, query, and item details view
+  //     setSearchResults([]);
+  //     setSearchQuery('');
+  //     setSelectedItem(null);
+  //     setShowDetails(false);
+  //   } catch (error) {
+  //     console.error('Error adding item to inventory:', error);
+  //   }
+  // };  
+
   const handleAddToInventory = async (item) => {
     try {
       const token = localStorage.getItem('token');
@@ -100,7 +139,13 @@ function Inventory() {
         throw new Error('User is not authenticated');
       }
   
+      // Log the fetched item data
+      console.log('Fetched item data:', item);
+  
       const userItem = mapFetchedItemToUserItem(item);
+  
+      // Log the mapped user item data
+      console.log('Mapped user item data:', userItem);
   
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
@@ -129,7 +174,8 @@ function Inventory() {
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };  
+  };
+  
 
   const handleCreateSubmit = async (newItem) => {
     try {
