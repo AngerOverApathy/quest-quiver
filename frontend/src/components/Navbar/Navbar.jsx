@@ -8,7 +8,7 @@ const Navbar = () => {
     return (
         <nav>
             <ul>
-                <li><Link to="/">Home</Link></li>
+                {/* <li><Link to="/">Home</Link></li> */}
                 {!isLoggedIn && <li><Link to="/">Login</Link></li>}
                 {!isLoggedIn && <li><Link to="/">Register</Link></li>}
                 {isLoggedIn && <li><Link to="/logout">Logout</Link></li>}

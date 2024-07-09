@@ -17,7 +17,7 @@ const AuthPage = () => {
             {/* Conditionally render the Login or Register component */}
             {isRegistering ? <Register /> : <Login />}
             {/* Button to toggle between Login and Register forms */}
-            <button onClick={toggleAuthMode}>
+            <button className="toggle-auth-mode" onClick={toggleAuthMode}>
                 {isRegistering ? 'Already have an account? Log in' : "Don't have an account? Register"}
             </button>
         </div>

@@ -24,13 +24,14 @@ const Login = () => {
 
     return (
         <div>
-            <form onSubmit={handleLogin}>
+            <form className="auth-form" onSubmit={handleLogin}>
                 <h2>Login</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <div>
                     <label>Email:</label>
                     <input
                         type="email"
+                        id='email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
