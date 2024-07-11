@@ -40,6 +40,10 @@
     box-sizing: border-box;
 }
 
+.auth-form input {
+    width: 100%;
+}
+
 /* Remove border for button */
 .auth button {
     border: none;
