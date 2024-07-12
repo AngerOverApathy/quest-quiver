@@ -221,6 +221,20 @@ const equipmentController = {
     }
   },
 
+  // // Delete an equipment item
+  // async deleteEquipment(req, res) {
+  //   try {
+  //     const result = await Equipment.findByIdAndDelete(req.params.id);
+  //     if (result) {
+  //       res.status(200).json({ message: 'Equipment deleted successfully' });
+  //     } else {
+  //       res.status(404).json({ message: 'Equipment not found' });
+  //     }
+  //   } catch (error) {
+  //     res.status(500).json({ message: 'Failed to delete equipment', error });
+  //   }
+  // }
+
   // Delete an equipment item
   async deleteEquipment(req, res) {
     try {

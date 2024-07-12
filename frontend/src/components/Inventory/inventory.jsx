@@ -94,44 +94,6 @@ function Inventory() {
     }
   };
 
-  // const handleAddToInventory = async (item) => {
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     if (!token) {
-  //       throw new Error('User is not authenticated');
-  //     }
-  
-  //     const userItem = mapFetchedItemToUserItem(item);
-  
-  //     const response = await fetch('http://localhost:5050/inventory/add', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ item: userItem }),
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error('Failed to add item to inventory');
-  //     }
-  
-  //     const data = await response.json();
-  //     console.log('Added item to inventory:', data); // Log the added item
-  
-  //     // Refetch the inventory to update the UI
-  //     await fetchUserInventory();
-  
-  //     // Clear search results, query, and item details view
-  //     setSearchResults([]);
-  //     setSearchQuery('');
-  //     setSelectedItem(null);
-  //     setShowDetails(false);
-  //   } catch (error) {
-  //     console.error('Error adding item to inventory:', error);
-  //   }
-  // };  
-
   const handleAddToInventory = async (item) => {
     try {
       const token = localStorage.getItem('token');
@@ -248,17 +210,18 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
-      const response = await fetch(`http://localhost:5050/equipment/${id}`, {
+
+      const response = await fetch(`http://localhost:5050/inventory/delete/${userId}/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
         throw new Error('Failed to delete item');
       }
-      setItems(items.filter(item => item._id !== id));
+      fetchItems(); // Refresh the item list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
     }

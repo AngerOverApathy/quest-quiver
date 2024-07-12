@@ -10,7 +10,7 @@ router.post('/', protect, equipmentController.createEquipment);               //
 router.get('/', protect, equipmentController.getAllEquipment);                // Get all equipment items
 router.get('/:id', protect, equipmentController.getEquipmentById);            // Get a single equipment item by ID
 router.put('/:id', protect, equipmentController.updateEquipment);             // Update an equipment item
-router.delete('/:id', protect, equipmentController.deleteEquipment);          // Delete an equipment item
+//router.delete('/:id', protect, equipmentController.deleteEquipment);          // Delete an equipment item
 
 
 module.exports = router;
