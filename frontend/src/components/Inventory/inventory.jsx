@@ -137,7 +137,6 @@ function Inventory() {
       console.error('Error adding item to inventory:', error);
     }
   };
-  
 
   const handleCreateSubmit = async (newItem) => {
     try {
@@ -207,21 +206,18 @@ function Inventory() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
-
-      const response = await fetch(`http://localhost:5050/inventory/delete/${userId}/${id}`, {
+      const response = await fetch(`http://localhost:5050/inventory/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete item');
+      if (response.ok) {
+        setItems(items.filter(item => item._id !== id));
+      } else {
+        console.error('Failed to delete item');
       }
-      fetchItems(); // Refresh the item list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
     }

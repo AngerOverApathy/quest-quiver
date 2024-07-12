@@ -6,6 +6,6 @@ const { protect } = require('../middleware/authMiddleware');
 router.post('/add', protect, inventoryController.addToInventory); //add fetched item to inventory
 router.get('/', protect, inventoryController.getUserInventory);
 router.put('/:id', protect, inventoryController.updateInventoryItem);
-router.delete('/delete/:userId/:itemId', protect, inventoryController.deleteItem);
+router.delete('/:itemId', protect, inventoryController.deleteItem);
 
 module.exports = router;

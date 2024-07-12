@@ -1,5 +1,5 @@
 const UserInventory = require('../models/userInventorySchema');
-const { saveFetchedEquipment } = require('./equipmentController');
+const Equipment = require('../models/equipmentSchema');
 const mongoose = require('mongoose');
 
 const inventoryController = {
@@ -83,53 +83,25 @@ const inventoryController = {
     }
   },
 
-  // // Delete an inventory item
-  // async deleteInventoryItem(req, res) {
-  //   try {
-  //     const deletedItem = await UserInventory.findByIdAndDelete(req.params.id);
-
-  //     if (!deletedItem) {
-  //       return res.status(404).json({ message: 'Inventory item not found' });
-  //     }
-
-  //     res.status(200).json({ message: 'Inventory item deleted successfully' });
-  //   } catch (error) {
-  //     console.error("Error deleting inventory item:", error);
-  //     res.status(500).json({ message: "Failed to delete inventory item", error: error.message });
-  //   }
-  // }
-  
-  // Delete an inventory item
-  async deleteInventoryItem(req, res) {
-    try {
-      const deletedItem = await UserInventory.findByIdAndDelete(req.params.id);
-      if (!deletedItem) {
-        return res.status(404).json({ message: 'Inventory item not found' });
-      }
-
-      res.status(200).json({ message: 'Inventory item deleted successfully' });
-    } catch (error) {
-      console.error("Error deleting inventory item:", error);
-      res.status(500).json({ message: "Failed to delete inventory item", error: error.message });
-    }
-  },
-
-  // Unified delete function
   async deleteItem(req, res) {
-    const { itemId, userId } = req.params;
-
+    const { itemId } = req.params;
+    console.log(`Attempting to delete item with ID: ${itemId}`);
     try {
-      // Delete the item from the UserInventory
-      const inventoryResult = await UserInventory.findOneAndDelete({ _id: itemId, user: userId });
+      const inventoryResult = await UserInventory.findByIdAndDelete(itemId);
       if (!inventoryResult) {
+        console.log(`Inventory item with ID ${itemId} not found`);
         return res.status(404).json({ message: 'Inventory item not found' });
       }
+
+      console.log(`Deleted inventory item with ID: ${itemId}`);
 
       // Optionally, delete the item from the Equipment collection if necessary
       const equipmentResult = await Equipment.findByIdAndDelete(itemId);
+      console.log(`Deleted equipment item with ID: ${itemId}`);
 
-      res.status(200).json({ message: 'Item deleted successfully from both inventory and equipment' });
+      res.status(200).json({ message: 'Item deleted successfully' });
     } catch (error) {
+      console.error(`Error deleting item with ID: ${itemId}`, error);
       res.status(500).json({ message: 'Error deleting item', error });
     }
   }
