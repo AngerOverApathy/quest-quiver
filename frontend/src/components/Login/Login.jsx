@@ -27,7 +27,7 @@ const Login = () => {
             <form className="auth-form" onSubmit={handleLogin}>
                 <h2>Login</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div>
+                <div className='email'>
                     <label>Email:</label>
                     <input
                         type="email"
