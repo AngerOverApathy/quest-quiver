@@ -37,7 +37,7 @@ const Login = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className='password'>
                     <label>Password:</label>
                     <input
                         type="password"
