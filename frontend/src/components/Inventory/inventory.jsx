@@ -59,7 +59,6 @@ function Inventory() {
   
       const data = await response.json();
       setItems(data);
-      console.log('Fetched user inventory:', data);
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
@@ -78,7 +77,6 @@ function Inventory() {
         throw new Error('Failed to fetch item details');
       }
       const data = await response.json();
-      console.log('Fetched item details:', data);
       setSelectedItem(data);
       setShowDetails(true);
     } catch (error) {
@@ -101,13 +99,7 @@ function Inventory() {
         throw new Error('User is not authenticated');
       }
   
-      // Log the fetched item data
-      console.log('Fetched item data:', item);
-  
       const userItem = mapFetchedItemToUserItem(item);
-  
-      // Log the mapped user item data
-      console.log('Mapped user item data:', userItem);
   
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
@@ -171,9 +163,9 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-  
+
       console.log('Updated item:', updatedItem);
-  
+
       const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
@@ -182,19 +174,19 @@ function Inventory() {
         },
         body: JSON.stringify(updatedItem),
       });
-  
+
       console.log('Response status:', response.status);
-  
+
       if (!response.ok) {
         const errorDetails = await response.json();
         console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
-  
+
       const data = await response.json();
-  
+
       console.log('Updated data:', data);
-  
+
       setItems(items.map(item => (item._id === data._id ? data : item)));
       setIsEditing(false);
       setEditingItem(null);

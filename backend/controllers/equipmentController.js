@@ -13,7 +13,7 @@ const equipmentController = {
     ];
 
     try {
-      console.log(`Fetching data for index: ${index}`); // Log the index being fetched
+
       const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
       const apiResponses = await Promise.allSettled(apiRequests);
 
@@ -39,8 +39,6 @@ const equipmentController = {
   // Save fetched equipment to DB
   async saveFetchedEquipment(item) {
     try {
-      console.log('Saving fetched equipment:', item); // Log the item being saved
-
       // Use equipmentId as the unique index identifier
       let equipment = await Equipment.findOne({ index: item.equipmentId });
 
@@ -87,7 +85,6 @@ const equipmentController = {
           effects: item.effects ? item.effects.map(effect => ({ name: effect.name || '', description: effect.description || '' })) : []
         });
         await equipment.save();
-        console.log('New Equipment saved:', equipment);
       }
       return equipment;
     } catch (error) {
@@ -116,8 +113,6 @@ const equipmentController = {
         magical,
         effects
       } = req.body;
-
-      console.log('Request body:', req.body);
 
       // Ensure that the data matches the schema structure
       const newEquipment = new Equipment({
@@ -206,34 +201,21 @@ const equipmentController = {
   // Update an equipment item
   async updateEquipment(req, res) {
     try {
-      const updatedEquipment = await Equipment.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
-      if (!updatedEquipment) {
-        res.status(404).json({ message: 'Equipment not found' });
-      } else {
-        res.status(200).json(updatedEquipment);
-      }
-    } catch (error) {
-      res.status(400).json({ message: 'Failed to update equipment', error });
-    }
-  },
+      const { id } = req.params;
+      const updatedData = req.body;
 
- // Delete an equipment item
-  // async deleteEquipment(req, res) {
-  //   try {
-  //     const result = await Equipment.findByIdAndDelete(req.params.id);
-  //     if (result) {
-  //       res.status(200).json({ message: 'Equipment deleted successfully' });
-  //     } else {
-  //       res.status(404).json({ message: 'Equipment not found' });
-  //     }
-  //   } catch (error) {
-  //     res.status(500).json({ message: 'Failed to delete equipment', error });
-  //   }
-  // }
+      const updatedEquipment = await Equipment.findByIdAndUpdate(id, updatedData, { new: true });
+
+      if (!updatedEquipment) {
+        return res.status(404).json({ message: 'Equipment not found' });
+      }
+
+      res.status(200).json(updatedEquipment);
+    } catch (error) {
+      console.error('Error updating equipment:', error);
+      res.status(500).json({ message: 'Failed to update equipment', error: error.message });
+    }
+  }
 };
 
 module.exports = equipmentController;

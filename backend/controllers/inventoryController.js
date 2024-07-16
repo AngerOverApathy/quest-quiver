@@ -22,14 +22,8 @@ const inventoryController = {
       const userId = req.user.id;
       const { item } = req.body;
 
-      // Log the received item data
-      console.log('Received item:', JSON.stringify(item, null, 2));
-
       // Save fetched equipment
       const equipment = await saveFetchedEquipment(item);
-
-      // Verify the correct equipment
-      console.log('Verified equipment to be added to inventory:', equipment);
 
       // Check if the item already exists in the user's inventory
       let inventoryItem = await UserInventory.findOne({ user: userId, equipmentId: equipment._id });
@@ -38,8 +32,6 @@ const inventoryController = {
         // If item exists, update the quantity and customizations
         inventoryItem.quantity += item.quantity || 1;
         inventoryItem.customizations = item.customizations || '';
-        // Log the updated inventory item data
-        console.log('Updated inventory item:', JSON.stringify(inventoryItem, null, 2));
       } else {
         // If item does not exist, create a new entry
         inventoryItem = new UserInventory({
