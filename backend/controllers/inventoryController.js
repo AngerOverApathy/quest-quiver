@@ -1,5 +1,6 @@
 const UserInventory = require('../models/userInventorySchema');
 const Equipment = require('../models/equipmentSchema');
+const { saveFetchedEquipment } = require('./equipmentController');
 const mongoose = require('mongoose');
 
 const inventoryController = {
@@ -83,6 +84,7 @@ const inventoryController = {
     }
   },
 
+  //Delete Equipment
   async deleteItem(req, res) {
     const { itemId } = req.params;
     console.log(`Attempting to delete item with ID: ${itemId}`);
