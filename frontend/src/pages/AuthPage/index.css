@@ -80,3 +80,20 @@
     color: #333333;
     cursor: pointer;
 }
+
+/* Media queries for responsiveness */
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .auth-form {
+        padding: 1rem;
+    }
+
+    .auth-form input {
+        width: 90%;
+    }
+
+    .toggle-auth-mode {
+        width: 90%;
+    }
+}
