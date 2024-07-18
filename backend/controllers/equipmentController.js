@@ -198,18 +198,17 @@ const equipmentController = {
     }
   },
 
-  // Update an equipment item
+// Update an equipment item
   async updateEquipment(req, res) {
     try {
-      const { id } = req.params;
+      const { id } = req.params; // This should be the equipment ID
       const updatedData = req.body;
 
       const updatedEquipment = await Equipment.findByIdAndUpdate(id, updatedData, { new: true });
 
       if (!updatedEquipment) {
-        return res.status(404).json({ message: 'Equipment not found' });
+        return res.status(404).json({ message: 'Equipment item not found' });
       }
-
       res.status(200).json(updatedEquipment);
     } catch (error) {
       console.error('Error updating equipment:', error);

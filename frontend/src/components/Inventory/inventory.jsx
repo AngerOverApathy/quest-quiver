@@ -159,34 +159,19 @@ function Inventory() {
 
   const handleEditSubmit = async (updatedItem) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
-
-      console.log('Updated item:', updatedItem);
-
       const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updatedItem),
+        body: JSON.stringify(updatedItem)
       });
 
-      console.log('Response status:', response.status);
-
       if (!response.ok) {
-        const errorDetails = await response.json();
-        console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
 
       const data = await response.json();
-
-      console.log('Updated data:', data);
-
       setItems(items.map(item => (item._id === data._id ? data : item)));
       setIsEditing(false);
       setEditingItem(null);
@@ -236,10 +221,6 @@ function Inventory() {
     setSelectedItem(null);
     setShowDetails(false);
   };
-
-  useEffect(() => {
-    console.log('Current items:', items); // Log current items to debug state updates
-  }, [items]);
 
   return (
     <div className="inventory-container">

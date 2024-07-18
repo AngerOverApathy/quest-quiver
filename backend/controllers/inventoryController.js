@@ -56,25 +56,44 @@ const inventoryController = {
   },
 
   // Update an inventory item
-  async updateInventoryItem(req, res) {
-    try {
-      const { quantity, customizations } = req.body;
-      const inventoryItem = await UserInventory.findByIdAndUpdate(
-        req.params.id,
-        { quantity, customizations },
+async updateInventoryItem(req, res) {
+  try {
+    const { id } = req.params;
+    const { quantity, customizations, equipmentData } = req.body;
+
+    // Update the inventory item
+    const inventoryItem = await UserInventory.findByIdAndUpdate(
+      id,
+      { quantity, customizations },
+      { new: true, runValidators: true }  // Return the updated object and run schema validations
+    );
+
+    if (!inventoryItem) {
+      return res.status(404).json({ message: 'Inventory item not found' });
+    }
+
+    // Update the associated equipment item if equipmentData is provided
+    if (equipmentData) {
+      const equipmentId = inventoryItem.equipmentId;
+      const updatedEquipment = await Equipment.findByIdAndUpdate(
+        equipmentId,
+        equipmentData,
         { new: true, runValidators: true }  // Return the updated object and run schema validations
       );
 
-      if (!inventoryItem) {
-        return res.status(404).json({ message: 'Inventory item not found' });
+      if (!updatedEquipment) {
+        return res.status(404).json({ message: 'Equipment item not found' });
       }
 
-      res.status(200).json(inventoryItem);
-    } catch (error) {
-      console.error("Error updating inventory item:", error);
-      res.status(400).json({ message: "Failed to update inventory item", error: error.message });
+      inventoryItem.equipmentId = updatedEquipment; // Embed the updated equipment in the response
     }
-  },
+
+    res.status(200).json(inventoryItem);
+  } catch (error) {
+    console.error("Error updating inventory item:", error);
+    res.status(400).json({ message: "Failed to update inventory item", error: error.message });
+  }
+},
 
   //Delete Equipment
   async deleteItem(req, res) {
