@@ -198,23 +198,28 @@ const equipmentController = {
     }
   },
 
-// Update an equipment item
+ // Update an equipment item
   async updateEquipment(req, res) {
     try {
-      const { id } = req.params; // This should be the equipment ID
+      const { id } = req.params;
       const updatedData = req.body;
 
-      const updatedEquipment = await Equipment.findByIdAndUpdate(id, updatedData, { new: true });
+      // Remove _id from updatedData if it exists
+      delete updatedData._id;
+
+      const updatedEquipment = await Equipment.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
 
       if (!updatedEquipment) {
-        return res.status(404).json({ message: 'Equipment item not found' });
+        return res.status(404).json({ message: 'Equipment not found' });
       }
+
       res.status(200).json(updatedEquipment);
     } catch (error) {
       console.error('Error updating equipment:', error);
       res.status(500).json({ message: 'Failed to update equipment', error: error.message });
     }
   }
+
 };
 
 module.exports = equipmentController;

@@ -159,26 +159,46 @@ function Inventory() {
 
   const handleEditSubmit = async (updatedItem) => {
     try {
-      const response = await fetch(`http://localhost:5050/equipment/${updatedItem._id}`, {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('User is not authenticated');
+      }
+  
+      console.log('Updated item before submission:', updatedItem);
+  
+      const equipmentId = updatedItem.equipmentId._id || updatedItem.equipmentId;
+      console.log('Equipment ID being used:', equipmentId);
+  
+      const response = await fetch(`http://localhost:5050/equipment/${equipmentId}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(updatedItem)
       });
-
+  
+      console.log('Response status:', response.status);
+  
       if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error('Error details:', errorDetails);
         throw new Error('Failed to update item');
       }
-
+  
       const data = await response.json();
-      setItems(items.map(item => (item._id === data._id ? data : item)));
+  
+      console.log('Updated data:', data);
+  
+      // Update the state with the updated item
+      setItems(items.map(item => (item.equipmentId._id === data._id ? { ...item, equipmentId: data } : item)));
       setIsEditing(false);
       setEditingItem(null);
     } catch (error) {
       console.error('Error updating item:', error);
     }
   };
+    
 
   const handleDelete = async (id) => {
     try {
