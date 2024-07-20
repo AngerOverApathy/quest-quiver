@@ -24,7 +24,7 @@ const Register = () => {
             <form className="auth-form" onSubmit={handleRegister}>
                 <h2>Register</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div>
+                <div className='email'>
                     <label>Username:</label>
                     <input
                         type="text"
@@ -33,7 +33,7 @@ const Register = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className='email'>
                     <label>Email:</label>
                     <input
                         type="email"
@@ -42,7 +42,7 @@ const Register = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className='password'>
                     <label>Password:</label>
                     <input
                         type="password"
