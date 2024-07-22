@@ -76,8 +76,9 @@
 }
 
 .toggle-auth-mode {
-    margin-top: 1rem;
-    color: #333333;
+    width: 28%;
+    margin: 0.5rem 1rem;
+    padding: 0.5rem;
     cursor: pointer;
 }
 
