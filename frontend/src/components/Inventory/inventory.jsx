@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
+import './index.css';
 
 function mapFetchedItemToUserItem(item) {
   return {
@@ -244,8 +245,6 @@ function Inventory() {
 
   return (
     <div className="inventory-container">
-      <button onClick={handleCreate}>Create New Item</button>
-
       <input
         type="text"
         value={searchQuery}
@@ -253,6 +252,8 @@ function Inventory() {
         placeholder="Search for equipment"
       />
       <button onClick={handleSearch}>Search</button>
+
+      <button onClick={handleCreate}>Create New Item</button>
 
       <div>
         <h3>Search Results</h3>

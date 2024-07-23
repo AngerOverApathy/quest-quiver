@@ -1,6 +1,7 @@
 import React from 'react';
 import Inventory from '../../components/Inventory/Inventory'
 import Navbar from '../../components/Navbar/Navbar'
+import './index.css'
 
 function HomePage() {
   return (
