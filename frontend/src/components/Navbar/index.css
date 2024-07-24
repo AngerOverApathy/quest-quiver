@@ -1,4 +1,22 @@
 nav {
     border-top: solid 1px #ccc;
-    border-bottom: solid 1px #ccc;
+    color: #ccc;
+}
+
+ul, ol {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes padding */
+    margin: 0; /* Removes margin */
+}
+
+li {
+    text-align: right;
+    margin-right: 5rem;
+    padding-top: 1rem;
+    font-family: 'BronzPersonalUseOnly';
+}
+
+a {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Inherits color from parent element */
 }
