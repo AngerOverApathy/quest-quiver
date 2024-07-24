@@ -11,13 +11,34 @@ ul, ol {
 
 li {
     text-align: right;
-    margin-right: 5rem;
+    margin-right: 3rem;
     padding-top: 1rem;
     font-family: 'BronzPersonalUseOnly';
     font-weight: bolder;
+    font-size: 1.3rem;
 }
 
 a {
     text-decoration: none; /* Removes underline */
     color: inherit; /* Inherits color from parent element */
+}
+
+/* Media queries for responsiveness */
+
+/* Smaller devices (320px wide) */
+@media only screen and (max-width: 320px) {
+    li {
+        font-size: 0.7rem; /* Adjust font size for smaller screens */
+        margin-right: 1rem; /* Adjust margin for smaller screens */
+        padding-bottom: 0.5rem; /* Adjust padding for smaller screens */
+    }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    li {
+        font-size: 0.8rem;
+        margin-right: 1.5rem;
+        padding-bottom: 0.5rem;
+    }
 }

@@ -7,3 +7,15 @@
     justify-content: center;
     align-items: center;
 }
+
+button {
+    font-family: 'BronzPersonalUseOnly';
+    padding: 8px;
+    margin-left: 0.3rem;
+}
+
+input {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: none;
+}
