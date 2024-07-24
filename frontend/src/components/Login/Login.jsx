@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import authService from '../../../services/authService'; 
+import './index.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');

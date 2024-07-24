@@ -299,16 +299,18 @@ function Inventory() {
         </div>
       )}
 
-      <div>
+      <div className='inventory'>
         <h3>Inventory Items</h3>
-        {items.map(item => (
-          <Item
-            key={item._id}
-            item={item}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        ))}
+          <div className='inventory-list'>
+            {items.map(item => (
+              <Item
+                key={item._id}
+                item={item}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))}
+          </div>
       </div>
 
       {isEditing && (

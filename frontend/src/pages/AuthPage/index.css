@@ -76,7 +76,7 @@
 }
 
 .toggle-auth-mode {
-    width: 28%;
+    width: 25%;
     margin: 0.5rem 1rem;
     padding: 0.5rem;
     cursor: pointer;
@@ -85,13 +85,9 @@
 /* Media queries for responsiveness */
 
 /* Medium devices (landscape tablets, 768px to 992px) */
-@media only screen and (min-width: 769px) and (max-width: 992px) {
-    .auth-form {
-        padding: 2rem;
-    }
-
+@media only screen and (min-width: 768px) and (max-width: 992px) {
     .toggle-auth-mode {
-        width: 75%;
+        width: 50%;
     }
 }
 
