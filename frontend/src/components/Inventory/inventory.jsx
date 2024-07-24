@@ -252,8 +252,8 @@ function Inventory() {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search for equipment"
         />
-        <button onClick={handleSearch}>Search</button>
-        <button onClick={handleCreate}>Create New Item</button>
+        <button className='search-btn' onClick={handleSearch}>Search</button>
+        <button className='create-btn' onClick={handleCreate}>Create New Item</button>
       </div>
 
       <div>
