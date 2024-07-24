@@ -39,8 +39,11 @@ const equipmentController = {
   // Save fetched equipment to DB
   async saveFetchedEquipment(item) {
     try {
+      console.log('Fetched Item:', item); // Log the fetched item
+
       // Use equipmentId as the unique index identifier
       let equipment = await Equipment.findOne({ index: item.equipmentId });
+
 
       if (equipment) {
         console.log('Existing Equipment found:', equipment);
@@ -62,13 +65,13 @@ const equipmentController = {
             }
           },
           range: {
-            normal: item.range?.normal || item.range?.split(': ')[1] || null,
-            long: item.range?.long || null
+            normal: typeof item.range === 'object' ? item.range.normal : (typeof item.range === 'string' ? item.range.split(': ')[1] : null),
+            long: typeof item.range === 'object' ? item.range.long : null
           },
           throw_range: {
             normal: item.throw_range?.normal || null,
             long: item.throw_range?.long || null
-          },
+          },          
           properties: item.properties ? item.properties.map(prop => ({ name: prop })) : [],
           equipment_category: {
             name: item.equipment_category?.name || item.equipmentCategory || ''

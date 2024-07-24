@@ -10,11 +10,11 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
     throw_range: { normal: '', long: '' },
     properties: [{ name: '' }],
     equipment_category: { name: '' },
-    rarity: '',
+    rarity: '', 
     requires_attunement: false,
     weight: '',
     cost: { quantity: '', unit: '' },
-    desc: [], // Ensure desc is an array
+    desc: [], 
     magical: false,
     effects: [{ effectName: '', effectDescription: '' }]
   });

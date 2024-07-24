@@ -6,8 +6,9 @@ function Item({ item, onDelete, onEdit }) {
 
   const toggleDetails = () => {
     setShowDetails(prev => !prev);
-    console.log(item)
   };
+
+  console.log('Item Data:', item)
 
   // Use equipmentId properties if available
   const equipment = item.equipmentId || {};
@@ -45,7 +46,9 @@ function Item({ item, onDelete, onEdit }) {
           )}
           {equipment.cost && <p><strong>Cost:</strong> {equipment.cost.quantity} {equipment.cost.unit}</p>}
           {equipment.weight && <p><strong>Weight:</strong> {equipment.weight} lbs</p>}
-          {equipment.rarity && equipment.rarity.name && <p><strong>Rarity:</strong> {equipment.rarity.name}</p>}
+          {equipment.rarity && equipment.rarity.name && equipment.rarity.name.trim() !== '' && (
+            <p><strong>Rarity:</strong> {equipment.rarity.name}</p>
+          )}
           {equipment.requires_attunement !== undefined && (
             <p><strong>Requires Attunement:</strong> {equipment.requires_attunement ? 'Yes' : 'No'}</p>
           )}

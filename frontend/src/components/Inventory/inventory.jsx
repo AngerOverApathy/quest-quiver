@@ -12,14 +12,20 @@ function mapFetchedItemToUserItem(item) {
     weaponCategory: item.weapon_category || '',
     damage: item.damage ? item.damage.damage_dice : '',
     damageType: item.damage ? item.damage.damage_type.name : '',
-    range: item.range ? {
+    range: typeof item.range === 'object' ? {
       normal: item.range.normal || '',
       long: item.range.long || ''
-      } : { normal: '', long: '' },
-      throw_range: item.throw_range ? {
-          normal: item.throw_range.normal || '',
-          long: item.throw_range.long || ''
-      } : { normal: '', long: '' }, 
+    } : { 
+      normal: typeof item.range === 'string' ? item.range.split(': ')[1] || '' : '',
+      long: '' 
+    },
+    throw_range: item.throw_range ? {
+      normal: item.throw_range.normal || '',
+      long: item.throw_range.long || ''
+    } : { 
+      normal: '', 
+      long: '' 
+    },    
     properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names
     cost: item.cost,
     weight: item.weight,
