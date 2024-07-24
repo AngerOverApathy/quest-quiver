@@ -22,6 +22,14 @@
   font-weight: bolder;
 }
 
+.item-container > button {
+  border: none;
+  border-radius: 5px;
+  background-color: #043e04;
+  color: white;
+  cursor: pointer;
+}
+
 .item-details {
   margin-top: 0.5rem;
 }
@@ -46,3 +54,4 @@
 .item-buttons button:hover {
   opacity: 0.8;
 }
+
