@@ -25,20 +25,21 @@ a {
 
 /* Media queries for responsiveness */
 
-/* Smaller devices (320px wide) */
-@media only screen and (max-width: 320px) {
-    li {
-        font-size: 0.7rem; /* Adjust font size for smaller screens */
-        margin-right: 1rem; /* Adjust margin for smaller screens */
-        padding-bottom: 0.5rem; /* Adjust padding for smaller screens */
-    }
-}
-
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     li {
         font-size: 0.8rem;
         margin-right: 1.5rem;
         padding-bottom: 0.5rem;
+    }
+}
+
+/* Smaller devices (320px wide) */
+@media only screen and (max-width: 320px) {
+    li {
+        font-size: 1rem; 
+        margin-right: 0.6rem;
+        padding-top: 0.3rem;       
+        padding-bottom: 0.3rem;    
     }
 }

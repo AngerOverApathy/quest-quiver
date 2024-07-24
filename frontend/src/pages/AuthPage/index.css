@@ -84,6 +84,17 @@
 
 /* Media queries for responsiveness */
 
+/* Medium devices (landscape tablets, 768px to 992px) */
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .auth-form {
+        padding: 2rem;
+    }
+
+    .toggle-auth-mode {
+        width: 75%;
+    }
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .auth > div {
@@ -102,16 +113,5 @@
 
     .toggle-auth-mode {
         width: 65%;
-    }
-}
-
-/* Medium devices (landscape tablets, 768px to 992px) */
-@media only screen and (min-width: 769px) and (max-width: 992px) {
-    .auth-form {
-        padding: 2rem;
-    }
-
-    .toggle-auth-mode {
-        width: 75%;
     }
 }

@@ -19,3 +19,21 @@ input {
     border-radius: 5px;
     border: none;
 }
+
+/* Media queries for responsiveness */
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    li {
+        font-size: 0.8rem;
+        margin-right: 1.5rem;
+        padding-bottom: 0.5rem;
+    }
+}
+
+/* Smaller devices (320px wide) */
+@media only screen and (max-width: 320px) {
+    .item-bar {
+        flex-direction: column;
+    }
+}
