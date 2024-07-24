@@ -1,32 +1,48 @@
 .item-container {
-    border: 1px solid #ccc;
-    font-family: 'Bronz FOR PERSONAL USE ONLY! Regular';
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-  
-  .item-container h3 {
-    color: #ffffff;
-  }
-  
-  .item-container p {
-    font-size: 14px;
-    color: #ffffff;
-    font-weight: bolder;
-  }
-  
-  button {
-    margin-right: 10px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #043e04;
-    color: white;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }  
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Bronz FOR PERSONAL USE ONLY! Regular';
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.item-container > h3 {
+  color: #ffffff;
+  padding: 0.3rem;
+}
+
+.item-container > p {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: bolder;
+}
+
+.item-details {
+  margin-top: 0.5rem;
+}
+
+.item-buttons {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.item-buttons button {
+  margin-top: 0.5rem;
+  padding: 0.3rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #043e04;
+  color: white;
+  cursor: pointer;
+}
+
+.item-buttons button:hover {
+  opacity: 0.8;
+}

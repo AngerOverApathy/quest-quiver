@@ -16,7 +16,7 @@ function Item({ item, onDelete, onEdit }) {
       <h3>{equipment.name}</h3>
       {equipment.desc && equipment.desc.length > 0 && <p>{equipment.desc.join(' ')}</p>}
       {showDetails && (
-        <div>
+        <div className='item-details'>
           {equipment.category_range && <p><strong>Category Range:</strong> {equipment.category_range}</p>}
           {equipment.equipment_category && equipment.equipment_category.name && (
             <p><strong>Equipment Category:</strong> {equipment.equipment_category.name}</p>
@@ -52,11 +52,13 @@ function Item({ item, onDelete, onEdit }) {
           )}
         </div>
       )}
-      <button onClick={toggleDetails}>
-        {showDetails ? 'Hide Details' : 'See More'}
-      </button>
-      <button onClick={() => onEdit(item)}>Edit</button>
-      <button onClick={() => onDelete(item._id)}>Delete</button>
+      <div className="item-buttons">
+        <button onClick={toggleDetails}>
+          {showDetails ? 'Hide Details' : 'See More'}
+        </button>
+        <button onClick={() => onEdit(item)}>Edit</button>
+        <button onClick={() => onDelete(item._id)}>Delete</button>
+      </div>
     </div>
   );
 }
