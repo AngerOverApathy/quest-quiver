@@ -1,3 +1,9 @@
 .inventory-container {
-    /* color: white; */
+    color: white;
+}
+
+.item-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

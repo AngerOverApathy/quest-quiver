@@ -245,15 +245,16 @@ function Inventory() {
 
   return (
     <div className="inventory-container">
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search for equipment"
-      />
-      <button onClick={handleSearch}>Search</button>
-
-      <button onClick={handleCreate}>Create New Item</button>
+      <div className='item-bar'>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search for equipment"
+        />
+        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleCreate}>Create New Item</button>
+      </div>
 
       <div>
         <h3>Search Results</h3>
