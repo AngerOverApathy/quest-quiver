@@ -6,7 +6,7 @@ import './index.css'
 function HomePage() {
   return (
     <div className="homepage-container">
-      <h1>Welcome to Dimensional Depot</h1>
+      <h1>DIMENSIONAL DEPOT</h1>
       <Navbar />
       <Inventory />
     </div>
