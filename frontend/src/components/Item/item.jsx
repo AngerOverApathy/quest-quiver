@@ -6,6 +6,7 @@ function Item({ item, onDelete, onEdit }) {
 
   const toggleDetails = () => {
     setShowDetails(prev => !prev);
+    console.log(item)
   };
 
   // Use equipmentId properties if available
@@ -28,9 +29,16 @@ function Item({ item, onDelete, onEdit }) {
           {equipment.two_handed_damage && equipment.two_handed_damage.damage_dice && (
             <p><strong>Two-Handed Damage:</strong> {equipment.two_handed_damage.damage_dice} {equipment.two_handed_damage.damage_type.name}</p>
           )}
-          {equipment.range && <p><strong>Range:</strong> {equipment.range.normal} / {equipment.range.long}</p>}
-          {equipment.throw_range && equipment.throw_range.normal && equipment.throw_range.long && (
-            <p><strong>Throw Range:</strong> Normal: {equipment.throw_range.normal}, Long: {equipment.throw_range.long}</p>
+          {equipment.range && (
+            <p><strong>Range:</strong> 
+              {equipment.range.normal}
+              {equipment.range.long && equipment.range.long !== '' ? ` / ${equipment.range.long}` : ''}
+            </p>
+          )}
+          {equipment.throw_range && equipment.throw_range.normal && (
+            <p><strong>Throw Range:</strong> Normal: {equipment.throw_range.normal}
+              {equipment.throw_range.long && equipment.throw_range.long !== '' ? `, Long: ${equipment.throw_range.long}` : ''}
+            </p>
           )}
           {equipment.properties && equipment.properties.length > 0 && (
             <p><strong>Properties:</strong> {equipment.properties.map(prop => prop && prop.name).join(', ')}</p>
