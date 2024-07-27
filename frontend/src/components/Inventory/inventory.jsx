@@ -26,7 +26,7 @@ function mapFetchedItemToUserItem(item) {
       normal: null, 
       long: null 
     },    
-    properties: item.properties ? item.properties.map(prop => ({ name: prop.name })) : [],  // Ensure properties are objects
+    properties: item.properties ? item.properties.map(prop => prop.name) : [],
     cost: item.cost ? {
       quantity: item.cost.quantity || 0,
       unit: item.cost.unit || ''
@@ -293,36 +293,67 @@ function Inventory() {
       </div>
 
       {showDetails && selectedItem && (
-        <div>
-          <h3>Item Details</h3>
-          <p>Name: {selectedItem.name}</p>
-          {selectedItem.desc && selectedItem.desc.length > 0 && (
-            <p>Description: {selectedItem.desc.join(', ')}</p>
-          )}
-          {selectedItem.equipment_category && (
-            <p>Equipment Category: {selectedItem.equipment_category.name}</p>
-          )}
-          {selectedItem.weapon_category && (
-            <p>Weapon Category: {selectedItem.weapon_category}</p>
-          )}
-          {selectedItem.weapon_range && (
-            <p>Weapon Range: {selectedItem.weapon_range}</p>
-          )}
-          {selectedItem.cost && selectedItem.cost.quantity && selectedItem.cost.unit && (
-            <p>Cost: {selectedItem.cost.quantity} {selectedItem.cost.unit}</p>
-          )}
-          {selectedItem.damage && selectedItem.damage.damage_dice && selectedItem.damage.damage_type && (
-            <p>Damage: {selectedItem.damage.damage_dice} {selectedItem.damage.damage_type.name}</p>
-          )}
-          {selectedItem.weight && (
-            <p>Weight: {selectedItem.weight}</p>
-          )}
-          {selectedItem.properties && selectedItem.properties.length > 0 && (
-            <p>Properties: {selectedItem.properties.map(prop => prop.name).join(', ')}</p>
-          )}
-          <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button>
-        </div>
+      <div>
+        <h3>Item Details</h3>
+        <p>Name: {selectedItem.name}</p>
+        {selectedItem.desc && selectedItem.desc.length > 0 && (
+          <p>Description: {selectedItem.desc.join(' ')}</p>
+        )}
+        {selectedItem.equipment_category && selectedItem.equipment_category.name && (
+          <p>Equipment Category: {selectedItem.equipment_category.name}</p>
+        )}
+        {selectedItem.weapon_category && (
+          <p>Weapon Category: {selectedItem.weapon_category}</p>
+        )}
+        {selectedItem.weapon_range && (
+          <p>Weapon Range: {selectedItem.weapon_range}</p>
+        )}
+        {selectedItem.damage && selectedItem.damage.damage_dice && selectedItem.damage.damage_type && (
+          <p>Damage: {selectedItem.damage.damage_dice} / {selectedItem.damage.damage_type.name}</p>
+        )}
+        {selectedItem.two_handed_damage && selectedItem.two_handed_damage.damage_dice && (
+          <p>Two-Handed Damage: {selectedItem.two_handed_damage.damage_dice} {selectedItem.two_handed_damage.damage_type.name}</p>
+        )}
+        {selectedItem.range && selectedItem.range.normal && (
+          <p>Range: {selectedItem.range.normal} ft
+            {selectedItem.range.long && selectedItem.range.long !== '' ? ` / ${selectedItem.range.long} ft` : ''}
+          </p>
+        )}
+        {selectedItem.throw_range && selectedItem.throw_range.normal && (
+          <p>Throw Range: Normal: {selectedItem.throw_range.normal} ft
+            {selectedItem.throw_range.long && selectedItem.throw_range.long !== '' ? `, Long: ${selectedItem.throw_range.long} ft` : ''}
+          </p>
+        )}
+        {selectedItem.cost && selectedItem.cost.quantity > 0 && selectedItem.cost.unit && (
+          <p>Cost: {selectedItem.cost.quantity} {selectedItem.cost.unit}</p>
+        )}
+        {selectedItem.properties && selectedItem.properties.length > 0 && selectedItem.properties.some(prop => prop.name) && (
+          <p>Properties: {selectedItem.properties.map(prop => prop.name).filter(name => name).join(', ')}</p>
+        )}
+        {selectedItem.weight && (
+          <p>Weight: {selectedItem.weight} lbs</p>
+        )}
+        {selectedItem.rarity && selectedItem.rarity.name && selectedItem.rarity.name.trim() !== '' && (
+          <p>Rarity: {selectedItem.rarity.name}</p>
+        )}
+        {selectedItem.requires_attunement !== undefined && (
+          <p>Requires Attunement: {selectedItem.requires_attunement ? 'Yes' : 'No'}</p>
+        )}
+        {selectedItem.magical !== undefined && (
+          <p>Magical: {selectedItem.magical ? 'Yes' : 'No'}</p>
+        )}
+        {selectedItem.effects && selectedItem.effects.length > 0 && selectedItem.effects.some(effect => effect.effectName || effect.effectDescription) && (
+          <div>
+            <strong>Effects:</strong>
+            {selectedItem.effects.map((effect, index) => (
+              effect && (effect.effectName || effect.effectDescription) && <p key={index}>{effect.effectName}: {effect.effectDescription}</p>
+            ))}
+          </div>
+        )}
+        <button onClick={() => handleAddToInventory(selectedItem)}>Add to Inventory</button>
+      </div>
       )}
+
 
       <div className='inventory'>
         <h3>Inventory Items</h3>
