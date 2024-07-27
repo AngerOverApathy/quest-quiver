@@ -237,7 +237,7 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
         />
       </label>
       <label>
-        Cost Quantity:
+        Cost:
         <input
           type="number"
           name="cost_quantity"

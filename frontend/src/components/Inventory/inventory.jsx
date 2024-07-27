@@ -6,34 +6,46 @@ import './index.css';
 function mapFetchedItemToUserItem(item) {
   return {
     name: item.name,
-    description: item.desc ? item.desc.join(' ') : '',
+    desc: Array.isArray(item.desc) ? item.desc : [],  // Ensure desc is saved as an array
     equipmentType: item.equipment_category ? item.equipment_category.name : '',
     equipmentCategory: item.category_range || '',
     weaponCategory: item.weapon_category || '',
     damage: item.damage ? item.damage.damage_dice : '',
     damageType: item.damage ? item.damage.damage_type.name : '',
     range: typeof item.range === 'object' ? {
-      normal: item.range.normal || '',
-      long: item.range.long || ''
+      normal: item.range.normal || null,  // Use null for numbers
+      long: item.range.long || null
     } : { 
-      normal: typeof item.range === 'string' ? item.range.split(': ')[1] || '' : '',
-      long: '' 
+      normal: typeof item.range === 'string' ? parseInt(item.range.split(': ')[1]) || null : null,
+      long: null 
     },
     throw_range: item.throw_range ? {
-      normal: item.throw_range.normal || '',
-      long: item.throw_range.long || ''
+      normal: item.throw_range.normal || null,
+      long: item.throw_range.long || null
     } : { 
-      normal: '', 
-      long: '' 
+      normal: null, 
+      long: null 
     },    
-    properties: item.properties ? item.properties.map(prop => prop.name) : [],  // Extract only the names
-    cost: item.cost,
-    weight: item.weight,
-    rarity: item.rarity ? item.rarity.name : '',
+    properties: item.properties ? item.properties.map(prop => ({ name: prop.name })) : [],  // Ensure properties are objects
+    cost: item.cost ? {
+      quantity: item.cost.quantity || 0,
+      unit: item.cost.unit || ''
+    } : { 
+      quantity: 0, 
+      unit: '' 
+    },    
+    weight: item.weight || 0,  // Default weight to 0 if not present
+    rarity: item.rarity ? item.rarity.name : '',  // Ensure rarity is a string
     acquiredDate: new Date(),
     customizations: '',
     quantity: 1,
-    equipmentId: item.index
+    equipmentId: item.index,
+    requires_attunement: item.requires_attunement || false,
+    magical: item.magical || false,
+    effects: item.effects ? item.effects.map(effect => ({
+      effectName: effect.effectName || '',
+      effectDescription: effect.effectDescription || ''
+    })) : []
   };
 }
 
