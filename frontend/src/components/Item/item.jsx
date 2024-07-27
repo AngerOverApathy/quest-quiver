@@ -23,14 +23,14 @@ function Item({ item, onDelete, onEdit }) {
         <p><strong>Two-Handed Damage:</strong> {equipment.two_handed_damage.damage_dice} {equipment.two_handed_damage.damage_type.name}</p>
       )}
       {equipment.range && equipment.range.normal && (
-        <p><strong>Range:</strong> 
-          {equipment.range.normal}
-          {equipment.range.long && equipment.range.long !== '' ? ` / ${equipment.range.long}` : ''}
+        <p><strong>Range: </strong> 
+          {equipment.range.normal} ft
+          {equipment.range.long && equipment.range.long !== '' ? ` / ${equipment.range.long} ft` : ''}
         </p>
       )}
       {equipment.throw_range && equipment.throw_range.normal && (
-        <p><strong>Throw Range:</strong> Normal: {equipment.throw_range.normal}
-          {equipment.throw_range.long && equipment.throw_range.long !== '' ? `, Long: ${equipment.throw_range.long}` : ''}
+        <p><strong>Throw Range:</strong> Normal: {equipment.throw_range.normal} ft
+          {equipment.throw_range.long && equipment.throw_range.long !== '' ? `, Long: ${equipment.throw_range.long} ft` : ''}
         </p>
       )}
       {equipment.desc && equipment.desc.length > 0 && <p>{equipment.desc.join(' ')}</p>}
@@ -41,10 +41,12 @@ function Item({ item, onDelete, onEdit }) {
             <p><strong>Equipment Category:</strong> {equipment.equipment_category.name}</p>
           )}
           {equipment.weapon_category && <p><strong>Weapon Category:</strong> {equipment.weapon_category}</p>}
-          {equipment.properties && equipment.properties.length > 0 && (
-            <p><strong>Properties:</strong> {equipment.properties.map(prop => prop && prop.name).join(', ')}</p>
+          {(equipment.properties && equipment.properties.length > 0 && equipment.properties.some(prop => prop.name)) && (
+            <p><strong>Properties:</strong> {equipment.properties.map(prop => prop && prop.name).filter(name => name).join(', ')}</p>
           )}
-          {equipment.cost && equipment.cost.quantity && <p><strong>Cost:</strong> {equipment.cost.quantity} {equipment.cost.unit}</p>}
+          {(equipment.cost && equipment.cost.quantity > 0 && equipment.cost.unit) && (
+          <p><strong>Cost:</strong> {equipment.cost.quantity} {equipment.cost.unit}</p>
+          )}
           {equipment.weight && <p><strong>Weight:</strong> {equipment.weight} lbs</p>}
           {equipment.rarity && equipment.rarity.name && equipment.rarity.name.trim() !== '' && (
             <p><strong>Rarity:</strong> {equipment.rarity.name}</p>
@@ -53,13 +55,13 @@ function Item({ item, onDelete, onEdit }) {
             <p><strong>Requires Attunement:</strong> {equipment.requires_attunement ? 'Yes' : 'No'}</p>
           )}
           {equipment.magical !== undefined && <p><strong>Magical:</strong> {equipment.magical ? 'Yes' : 'No'}</p>}
-          {equipment.effects && equipment.effects.length > 0 && (
-            <div>
-              <strong>Effects:</strong>
-              {equipment.effects.map((effect, index) => (
-                effect && <p key={index}>{effect.effectName}: {effect.effectDescription}</p>
-              ))}
-            </div>
+          {(equipment.effects && equipment.effects.length > 0 && equipment.effects.some(effect => effect.effectName || effect.effectDescription)) && (
+          <div>
+            <strong>Effects:</strong>
+            {equipment.effects.map((effect, index) => (
+              effect && (effect.effectName || effect.effectDescription) && <p key={index}>{effect.effectName}: {effect.effectDescription}</p>
+            ))}
+          </div>
           )}
         </div>
       )}
