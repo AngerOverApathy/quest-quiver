@@ -43,20 +43,18 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
         weight: equipment.weight || '',
         rarity: equipment.rarity || ''
       };
-      console.log('Initialized Item:', initializedItem); // Log the initialized item
       setFormData(initializedItem);
     }
   }, [item]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log('handleChange - Name:', name, 'Value:', value); // Log changes
     setFormData({ ...formData, [name]: value });
   };
 
   const handleNestedChange = (e, field, nestedField) => {
     const { value } = e.target;
-    console.log('handleNestedChange - Field:', field, 'Nested Field:', nestedField, 'Value:', value); // Log nested changes
+    ('handleNestedChange - Field:', field, 'Nested Field:', nestedField, 'Value:', value); // Log nested changes
     setFormData({
       ...formData,
       [field]: {
@@ -68,7 +66,6 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
 
   const handleArrayChange = (e, field, index, nestedField) => {
     const { value } = e.target;
-    console.log('handleArrayChange - Field:', field, 'Index:', index, 'Nested Field:', nestedField, 'Value:', value); // Log array changes
     const updatedArray = formData[field].map((item, i) => (
       i === index ? { ...item, [nestedField]: value } : item
     ));
@@ -77,7 +74,6 @@ const ItemForm = ({ item, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data on Submit:', formData); // Log form data on submit
     onSubmit(formData);
   };
 

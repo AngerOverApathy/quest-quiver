@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
+import { v4 as uuidv4 } from 'uuid';
 import './index.css';
 import './ModalStyles.css';
 
@@ -55,6 +56,7 @@ function mapFetchedItemToUserItem(item) {
 
 function Inventory() {
   const [items, setItems] = useState([]);
+  const [userCreatedItems, setUserCreatedItems] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
@@ -78,7 +80,7 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-
+  
       const response = await fetch('http://localhost:5050/inventory', {
         method: 'GET',
         headers: {
@@ -86,18 +88,24 @@ function Inventory() {
           'Authorization': `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch user inventory');
       }
-
-      const data = await response.json();
-      setItems(data);
+  
+      const data = await response.json();      
+      // Separate fetched items and user-created items if necessary
+      const fetchedItems = data.filter(item => !item.isUserCreated);
+      const userCreatedItems = data.filter(item => item.isUserCreated);
+      
+      setItems(fetchedItems);
+      setUserCreatedItems(userCreatedItems);
+  
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
-  };
-
+  };  
+  
   const fetchItemDetails = async (index) => {
     try {
       const url = `http://localhost:5050/equipment/fetch/${index}`;
@@ -133,9 +141,10 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-
+  
       const userItem = mapFetchedItemToUserItem(item);
-
+      console.log('User Item to Add:', userItem); // Log user item to add
+  
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
         headers: {
@@ -144,20 +153,22 @@ function Inventory() {
         },
         body: JSON.stringify({ item: userItem }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to add item to inventory');
       }
-
+  
       const data = await response.json();
       console.log('Added item to inventory:', data);
-
+  
       await fetchUserInventory();
-
+  
       setSearchResults([]);
       setSearchQuery('');
       setSelectedItem(null);
       setShowDetails(false);
+      setIsEditing(false);
+      setIsCreating(false);
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
@@ -169,26 +180,43 @@ function Inventory() {
       if (!token) {
         throw new Error('User is not authenticated');
       }
-
+  
+      const newItemWithFlag = { 
+        ...newItem, 
+        isUserCreated: true
+      };
+  
+      console.log('Creating new item:', newItemWithFlag);
+  
       const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(newItem),
+        body: JSON.stringify(newItemWithFlag),
       });
+  
       if (!response.ok) {
         throw new Error('Failed to create item');
       }
+  
       const data = await response.json();
-      setItems([...items, data]);
+      console.log('Created Item:', data);
+  
+      await fetchUserInventory();
+  
+      setSearchResults([]);
+      setSearchQuery('');
+      setSelectedItem(null);
+      setShowDetails(false);
       setIsEditing(false);
       setIsCreating(false);
     } catch (error) {
       console.error('Error creating item:', error);
     }
   };
+  
 
   const handleEditSubmit = async (updatedItem) => {
     try {
@@ -295,6 +323,14 @@ function Inventory() {
             <button onClick={() => handleAddToInventory(item)}>Add to Inventory</button>
           </div>
         ))}
+        {userCreatedItems.map(item => (
+          <Item
+            key={item._id}
+            item={item}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        ))}
       </div>
 
       {showDetails && selectedItem && (
@@ -386,7 +422,11 @@ function Inventory() {
           <h3>{isCreating ? 'Create Item' : 'Edit Item'}</h3>
           <ItemForm
             item={editingItem}
-            onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
+            onSubmit={isCreating ? async (item) => {
+              console.log(item)
+              await handleCreateSubmit(item); 
+              await handleAddToInventory(item)
+            } : handleEditSubmit}
             onCancel={handleCancel}
           />
         </div>

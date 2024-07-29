@@ -4,11 +4,11 @@ import './index.css';
 function Item({ item, onDelete, onEdit }) {
   const [showDetails, setShowDetails] = useState(false);
 
+  console.log('Rendering Item:', item); // Log item being rendered
+
   const toggleDetails = () => {
     setShowDetails(prev => !prev);
   };
-
-  console.log('Item Data:', item)
 
   // Use equipmentId properties if available
   const equipment = item.equipmentId || {};
