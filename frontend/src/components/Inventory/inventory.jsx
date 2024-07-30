@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
-import { v4 as uuidv4 } from 'uuid';
 import './index.css';
 import './ModalStyles.css';
 
-Modal.setAppElement('#root'); // Set the app element for accessibility
+Modal.setAppElement('#root'); // Set the app element for accessibility 
+
+const generateUniqueId = () => {
+  return 'id-' + new Date().getTime() + '-' + Math.floor(Math.random() * 1000);
+};
 
 function mapFetchedItemToUserItem(item) {
   return {
@@ -94,17 +97,17 @@ function Inventory() {
       }
   
       const data = await response.json();      
-      // Separate fetched items and user-created items if necessary
+      console.log('Fetched Inventory:', data); // Log the fetched inventory
       const fetchedItems = data.filter(item => !item.isUserCreated);
       const userCreatedItems = data.filter(item => item.isUserCreated);
-      
+  
       setItems(fetchedItems);
       setUserCreatedItems(userCreatedItems);
   
     } catch (error) {
       console.error('Error fetching user inventory:', error);
     }
-  };  
+  };
   
   const fetchItemDetails = async (index) => {
     try {
@@ -143,7 +146,8 @@ function Inventory() {
       }
   
       const userItem = mapFetchedItemToUserItem(item);
-      console.log('User Item to Add:', userItem); // Log user item to add
+      userItem.customId = item.customId || generateUniqueId(); // Preserve or generate customId
+      console.log('User Item to Add:', userItem);
   
       const response = await fetch('http://localhost:5050/inventory/add', {
         method: 'POST',
@@ -172,7 +176,7 @@ function Inventory() {
     } catch (error) {
       console.error('Error adding item to inventory:', error);
     }
-  };
+  };   
 
   const handleCreateSubmit = async (newItem) => {
     try {
@@ -183,10 +187,9 @@ function Inventory() {
   
       const newItemWithFlag = { 
         ...newItem, 
-        isUserCreated: true
+        isUserCreated: true,
+        customId: generateUniqueId() // Ensure this generates a unique customId
       };
-  
-      console.log('Creating new item:', newItemWithFlag);
   
       const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
@@ -202,7 +205,9 @@ function Inventory() {
       }
   
       const data = await response.json();
-      console.log('Created Item:', data);
+  
+      // Add the new item to the inventory
+      await handleAddToInventory(data);
   
       await fetchUserInventory();
   
@@ -215,8 +220,7 @@ function Inventory() {
     } catch (error) {
       console.error('Error creating item:', error);
     }
-  };
-  
+  };   
 
   const handleEditSubmit = async (updatedItem) => {
     try {
