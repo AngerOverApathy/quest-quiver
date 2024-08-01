@@ -3,9 +3,6 @@ import Modal from 'react-modal';
 import ItemForm from '../ItemForm/ItemForm';
 import Item from '../Item/Item';
 import './index.css';
-import './ModalStyles.css';
-
-Modal.setAppElement('#root'); // Set the app element for accessibility
 
 // Helper function to map fetched item to user item format
 function mapFetchedItemToUserItem(item) {

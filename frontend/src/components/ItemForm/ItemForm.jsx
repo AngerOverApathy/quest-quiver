@@ -82,11 +82,17 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Item Form Modal"
+      className="CreationForm_ReactModal__Content"
+      overlayClassName="CreationForm_ReactModal__Overlay"
     >
-      <form onSubmit={handleSubmit}>
+      <form 
+        className='item-form'
+        onSubmit={handleSubmit}
+      >
         <label>
           Name:
           <input
+            className='input-box'
             type="text"
             name="name"
             value={formData.name || ''}
@@ -98,6 +104,7 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
         <label>
           Category Range:
           <input
+            className='input-box'
             type="text"
             name="category_range"
             value={formData.category_range || ''}
@@ -218,15 +225,6 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           />
         </label>
         <label>
-          Requires Attunement:
-          <input
-            type="checkbox"
-            name="requires_attunement"
-            checked={formData.requires_attunement || false}
-            onChange={(e) => setFormData({ ...formData, requires_attunement: e.target.checked })}
-          />
-        </label>
-        <label>
           Weight:
           <input
             type="number"
@@ -267,15 +265,6 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           />
         </label>
         <label>
-          Magical:
-          <input
-            type="checkbox"
-            name="magical"
-            checked={formData.magical || false}
-            onChange={(e) => setFormData({ ...formData, magical: e.target.checked })}
-          />
-        </label>
-        <label>
           Effects:
           {formData.effects.map((effect, index) => (
             <div key={index}>
@@ -293,11 +282,31 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
                 onChange={(e) => handleArrayChange(e, 'effects', index, 'effectDescription')}
                 placeholder="e.g., Grants resistance to fire damage"
               />
+              <label>
+                Magical:
+                <input
+                  type="checkbox"
+                  name="magical"
+                  checked={formData.magical || false}
+                  onChange={(e) => setFormData({ ...formData, magical: e.target.checked })}
+                />
+              </label>
+              <label>
+                Requires Attunement:
+                <input
+                  type="checkbox"
+                  name="requires_attunement"
+                  checked={formData.requires_attunement || false}
+                  onChange={(e) => setFormData({ ...formData, requires_attunement: e.target.checked })}
+                />
+              </label>
             </div>
           ))}
         </label>
-        <button type="submit">Save</button>
-        <button type="button" onClick={onRequestClose}>Cancel</button>
+        <div className="button-container">
+          <button type="submit">Save</button>
+          <button type="button" onClick={onRequestClose}>Cancel</button>
+        </div>
       </form>
     </Modal>
   );

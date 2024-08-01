@@ -3,8 +3,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-family: 'Bronz FOR PERSONAL USE ONLY! Regular';
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
+  margin: 0.5rem;
+  padding: 0rem 0.5rem 0.5rem 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
