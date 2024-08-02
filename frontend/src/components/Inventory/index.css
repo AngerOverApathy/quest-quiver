@@ -121,6 +121,20 @@ input {
             max-height: 70vh;
             max-width: 70%;
         }
+
+        /* CREATION/EDIT FORM Modal content styling */
+        .CreationForm_ReactModal__Content {
+            max-height: 75vh;
+            max-width: 80%;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 }
 
 /* Smaller devices (320px wide) */
