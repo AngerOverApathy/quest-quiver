@@ -7,6 +7,7 @@ import './ModalStyles.css';
 
 Modal.setAppElement('#root'); // Set the app element for accessibility
 
+// Helper function to map fetched item to user item format
 function mapFetchedItemToUserItem(item) {
   return {
     name: item.name,
@@ -64,6 +65,7 @@ function Inventory() {
   const [showDetails, setShowDetails] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false); // Modal state
 
+  // Fetch user inventory on component mount
   useEffect(() => {
     console.log('useEffect triggered - fetching user inventory');
     fetchUserInventory();
@@ -72,12 +74,11 @@ function Inventory() {
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
+  // Fetch user inventory from API
   const fetchUserInventory = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
+      if (!token) throw new Error('User is not authenticated');
 
       const response = await fetch('http://localhost:5050/inventory', {
         method: 'GET',
@@ -87,9 +88,7 @@ function Inventory() {
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user inventory');
-      }
+      if (!response.ok) throw new Error('Failed to fetch user inventory');
 
       const data = await response.json();
       setItems(data);
@@ -98,6 +97,7 @@ function Inventory() {
     }
   };
 
+  // Fetch item details by index
   const fetchItemDetails = async (index) => {
     try {
       const url = `http://localhost:5050/equipment/fetch/${index}`;
@@ -107,9 +107,8 @@ function Inventory() {
           'Accept': 'application/json',
         },
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch item details');
-      }
+      if (!response.ok) throw new Error('Failed to fetch item details');
+      
       const data = await response.json();
       setSelectedItem(data);
       setShowDetails(true);
@@ -119,6 +118,7 @@ function Inventory() {
     }
   };
 
+  // Handle search action
   const handleSearch = async () => {
     try {
       await fetchItemDetails(searchQuery);
@@ -127,12 +127,11 @@ function Inventory() {
     }
   };
 
+  // Add item to user inventory
   const handleAddToInventory = async (item) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
+      if (!token) throw new Error('User is not authenticated');
 
       const userItem = mapFetchedItemToUserItem(item);
 
@@ -145,9 +144,7 @@ function Inventory() {
         body: JSON.stringify({ item: userItem }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to add item to inventory');
-      }
+      if (!response.ok) throw new Error('Failed to add item to inventory');
 
       const data = await response.json();
       console.log('Added item to inventory:', data);
@@ -163,12 +160,11 @@ function Inventory() {
     }
   };
 
+  // Handle item creation
   const handleCreateSubmit = async (newItem) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
+      if (!token) throw new Error('User is not authenticated');
 
       const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
@@ -178,9 +174,8 @@ function Inventory() {
         },
         body: JSON.stringify(newItem),
       });
-      if (!response.ok) {
-        throw new Error('Failed to create item');
-      }
+      if (!response.ok) throw new Error('Failed to create item');
+      
       const data = await response.json();
       setItems([...items, data]);
       setIsEditing(false);
@@ -190,12 +185,11 @@ function Inventory() {
     }
   };
 
+  // Handle item editing
   const handleEditSubmit = async (updatedItem) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User is not authenticated');
-      }
+      if (!token) throw new Error('User is not authenticated');
 
       console.log('Updated item before submission:', updatedItem);
 
@@ -231,6 +225,7 @@ function Inventory() {
     }
   };
 
+  // Handle item deletion
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
@@ -251,13 +246,16 @@ function Inventory() {
     }
   };
 
+  // Handle item edit action
   const handleEdit = (item) => {
     setEditingItem(item);
     setIsEditing(true);
     setIsCreating(false);
     setSelectedItem(null);
+    setModalIsOpen(true); // Open modal when editing
   };
 
+  // Handle item create action
   const handleCreate = () => {
     setEditingItem(null);
     setIsCreating(true);
@@ -265,6 +263,7 @@ function Inventory() {
     setSelectedItem(null);
   };
 
+  // Handle cancel action
   const handleCancel = () => {
     setIsEditing(false);
     setIsCreating(false);
@@ -388,6 +387,8 @@ function Inventory() {
             item={editingItem}
             onSubmit={isCreating ? handleCreateSubmit : handleEditSubmit}
             onCancel={handleCancel}
+            isOpen={true}
+            onRequestClose={handleCancel}
           />
         </div>
       )}
