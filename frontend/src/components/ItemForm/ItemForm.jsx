@@ -29,8 +29,18 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
         ...item,
         name: equipment.name || '',
         category_range: equipment.category_range || '',
-        damage: equipment.damage || { damage_dice: '', damage_type: { name: '' } },
-        two_handed_damage: equipment.two_handed_damage || { damage_dice: '', damage_type: { name: '' } },
+        damage: {
+          damage_dice: equipment.damage?.damage_dice || '',
+          damage_type: {
+            name: equipment.damage?.damage_type?.name || ''
+          }
+        },
+        two_handed_damage: {
+          damage_dice: equipment.two_handed_damage?.damage_dice || '',
+          damage_type: {
+            name: equipment.two_handed_damage?.damage_type?.name || ''
+          }
+        },
         range: equipment.range || { normal: '', long: '' },
         throw_range: equipment.throw_range || { normal: '', long: '' },
         properties: equipment.properties && equipment.properties.length ? equipment.properties : [{ name: '' }],
@@ -52,30 +62,41 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  
   const handleNestedChange = (e, field, nestedField) => {
     const { value } = e.target;
-    setFormData({
-      ...formData,
-      [field]: {
-        ...formData[field],
-        [nestedField]: value
-      }
-    });
-  };
-
+    console.log(`Updating ${field}.${nestedField} to ${value}`);
+    const fieldParts = nestedField.split('.');
+    if (fieldParts.length > 1) {
+      setFormData(prevState => ({
+        ...prevState,
+        [field]: {
+          ...prevState[field],
+          [fieldParts[0]]: {
+            ...prevState[field][fieldParts[0]],
+            [fieldParts[1]]: value
+          }
+        }
+      }));
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [field]: {
+          ...prevState[field],
+          [nestedField]: value
+        }
+      }));
+    }
+  };  
+  
   const handleArrayChange = (e, field, index, nestedField) => {
     const { value } = e.target;
     const updatedArray = formData[field].map((item, i) => (
       i === index ? { ...item, [nestedField]: value } : item
     ));
     setFormData({ ...formData, [field]: updatedArray });
-  };
+  };  
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   onSubmit(formData);
-  // };
   const handleSubmit = (e) => {
     e.preventDefault();
     const { _id, customId, ...cleanFormData } = formData; // Remove _id and customId
@@ -121,7 +142,7 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           Damage Dice:
           <input
             type="text"
-            name="damage_dice"
+            name="damage.damage_dice"
             value={formData.damage?.damage_dice || ''}
             onChange={(e) => handleNestedChange(e, 'damage', 'damage_dice')}
             placeholder="e.g., 1d8"
@@ -131,8 +152,8 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           Damage Type:
           <input
             type="text"
-            name="damage_type"
-            value={formData.damage?.damage_type?.name || ''}
+            name="damage.damage_type.name"
+            value={formData.damage.damage_type.name || ''}
             onChange={(e) => handleNestedChange(e, 'damage', 'damage_type.name')}
             placeholder="e.g., Slashing"
           />
@@ -141,7 +162,7 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           Two-Handed Damage Dice:
           <input
             type="text"
-            name="two_handed_damage_dice"
+            name="two_handed_damage.damage_dice"
             value={formData.two_handed_damage?.damage_dice || ''}
             onChange={(e) => handleNestedChange(e, 'two_handed_damage', 'damage_dice')}
             placeholder="e.g., 1d10"
@@ -151,8 +172,8 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
           Two-Handed Damage Type:
           <input
             type="text"
-            name="two_handed_damage_type"
-            value={formData.two_handed_damage?.damage_type?.name || ''}
+            name="two_handed_damage.damage_type.name"
+            value={formData.two_handed_damage.damage_type.name || ''}
             onChange={(e) => handleNestedChange(e, 'two_handed_damage', 'damage_type.name')}
             placeholder="e.g., Slashing"
           />
