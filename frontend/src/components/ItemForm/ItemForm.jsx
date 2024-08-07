@@ -72,10 +72,15 @@ const ItemForm = ({ item, onSubmit, onCancel, isOpen, onRequestClose }) => {
     setFormData({ ...formData, [field]: updatedArray });
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   onSubmit(formData);
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
-  };
+    const { _id, customId, ...cleanFormData } = formData; // Remove _id and customId
+    onSubmit(cleanFormData);
+  };  
 
   return (
     <Modal

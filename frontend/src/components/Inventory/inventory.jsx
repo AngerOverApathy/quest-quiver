@@ -158,29 +158,58 @@ function Inventory() {
   };
 
   // Handle item creation
+  // const handleCreateSubmit = async (newItem) => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     if (!token) throw new Error('User is not authenticated');
+
+  //     const response = await fetch('http://localhost:5050/equipment', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify(newItem),
+  //     });
+  //     if (!response.ok) throw new Error('Failed to create item');
+      
+  //     const data = await response.json();
+  //     setItems([...items, data]);
+  //     setIsEditing(false);
+  //     setIsCreating(false);
+  //   } catch (error) {
+  //     console.error('Error creating item:', error);
+  //   }
+  // };
+  
   const handleCreateSubmit = async (newItem) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('User is not authenticated');
-
+  
+      // Remove _id and customId if they exist
+      const { _id, customId, ...itemData } = newItem;
+  
       const response = await fetch('http://localhost:5050/equipment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(newItem),
+        body: JSON.stringify(itemData),
       });
+  
       if (!response.ok) throw new Error('Failed to create item');
-      
-      const data = await response.json();
-      setItems([...items, data]);
+  
+      const createdItem = await response.json();
+      await handleAddToInventory(createdItem);
+  
       setIsEditing(false);
       setIsCreating(false);
     } catch (error) {
       console.error('Error creating item:', error);
     }
-  };
+  };    
 
   // Handle item editing
   const handleEditSubmit = async (updatedItem) => {

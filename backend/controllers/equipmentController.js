@@ -1,10 +1,15 @@
-const axios = require('axios'); // Import Axios
+const axios = require('axios');
 const Equipment = require('../models/equipmentSchema');
+const crypto = require('crypto');
+
+const generateUniqueId = () => {
+  return crypto.randomBytes(10).toString('hex');
+};
 
 const equipmentController = {
   // Fetch data from an external API by index
   async fetchData(req, res) {
-    const { index } = req.params; // Get index from the route parameters
+    const { index } = req.params;
     const baseUrl = 'https://www.dnd5eapi.co/api';
     const endpoints = [
       `${baseUrl}/equipment/${index}`,
@@ -13,18 +18,17 @@ const equipmentController = {
     ];
 
     try {
-
       const apiRequests = endpoints.map(endpoint => axios.get(endpoint));
       const apiResponses = await Promise.allSettled(apiRequests);
 
       apiResponses.forEach((response, idx) => {
-        console.log(`Response from ${endpoints[idx]}:`, response); // Log each response
+        console.log(`Response from ${endpoints[idx]}:`, response);
       });
 
       const successfulResponse = apiResponses.find(response => response.status === 'fulfilled');
 
       if (successfulResponse) {
-        console.log('Successful response data:', successfulResponse.value.data); // Log the successful response data
+        console.log('Successful response data:', successfulResponse.value.data);
         res.status(200).json(successfulResponse.value.data);
       } else {
         console.log('No successful response found');
@@ -39,30 +43,24 @@ const equipmentController = {
   // Save fetched equipment to DB
   async saveFetchedEquipment(item) {
     try {
-      console.log('Fetched Item:', item); // Log the fetched item
+      console.log('Fetched Item:', item);
 
-      // Use equipmentId as the unique index identifier
-      let equipment = await Equipment.findOne({ index: item.equipmentId });
-
+      let equipment = await Equipment.findOne({ customId: item.equipmentId });
 
       if (equipment) {
         console.log('Existing Equipment found:', equipment);
       } else {
         equipment = new Equipment({
-          index: item.equipmentId, // Explicitly set the index field
+          customId: generateUniqueId(),
           name: item.name,
-          category_range: item.category_range || item.equipmentCategory || '', // Map category_range and equipmentCategory
+          category_range: item.category_range || item.equipmentCategory || '',
           damage: {
             damage_dice: item.damage || '',
-            damage_type: {
-              name: item.damageType || ''
-            }
+            damage_type: { name: item.damageType || '' }
           },
           two_handed_damage: {
             damage_dice: item.two_handed_damage?.damage_dice || '',
-            damage_type: {
-              name: item.two_handed_damage?.damage_type?.name || ''
-            }
+            damage_type: { name: item.two_handed_damage?.damage_type?.name || '' }
           },
           range: {
             normal: typeof item.range === 'object' ? item.range.normal : (typeof item.range === 'string' ? item.range.split(': ')[1] : null),
@@ -71,11 +69,9 @@ const equipmentController = {
           throw_range: {
             normal: item.throw_range?.normal || null,
             long: item.throw_range?.long || null
-          },          
-          properties: item.properties ? item.properties.map(prop => ({ name: prop })) : [],
-          equipment_category: {
-            name: item.equipment_category?.name || item.equipmentCategory || ''
           },
+          properties: item.properties ? item.properties.map(prop => ({ name: prop })) : [],
+          equipment_category: { name: item.equipment_category?.name || item.equipmentCategory || '' },
           rarity: item.rarity || '',
           requires_attunement: item.requires_attunement || false,
           weight: item.weight || 0,
@@ -87,8 +83,10 @@ const equipmentController = {
           magical: item.magical || false,
           effects: item.effects ? item.effects.map(effect => ({ name: effect.name || '', description: effect.description || '' })) : []
         });
+        console.log('New Equipment customId:', equipment.customId);
         await equipment.save();
       }
+      console.log('Saved Equipment customId:', equipment.customId);
       return equipment;
     } catch (error) {
       console.error("Error when saving fetched equipment:", error);
@@ -99,39 +97,19 @@ const equipmentController = {
   // Create a new equipment item
   async createEquipment(req, res) {
     try {
-      const {
-        name,
-        category_range,
-        damage,
-        two_handed_damage,
-        range,
-        throw_range,
-        properties,
-        equipment_category,
-        rarity,
-        requires_attunement,
-        weight,
-        cost,
-        desc,
-        magical,
-        effects
-      } = req.body;
+      const { name, category_range, damage, two_handed_damage, range, throw_range, properties, equipment_category, rarity, requires_attunement, weight, cost, desc, magical, effects } = req.body;
 
-      // Ensure that the data matches the schema structure
       const newEquipment = new Equipment({
+        customId: generateUniqueId(),
         name,
         category_range,
         damage: {
           damage_dice: damage?.damage_dice || '',
-          damage_type: {
-            name: damage?.damage_type?.name || ''
-          }
+          damage_type: { name: damage?.damage_type?.name || '' }
         },
         two_handed_damage: {
           damage_dice: two_handed_damage?.damage_dice || '',
-          damage_type: {
-            name: two_handed_damage?.damage_type?.name || ''
-          }
+          damage_type: { name: two_handed_damage?.damage_type?.name || '' }
         },
         range: {
           normal: range?.normal || null,
@@ -142,12 +120,8 @@ const equipmentController = {
           long: throw_range?.long || null
         },
         properties: properties ? properties.map(prop => ({ name: prop.name })) : [],
-        equipment_category: {
-          name: equipment_category?.name || ''
-        },
-        rarity: {
-          name: rarity?.name || ''
-        },
+        equipment_category: { name: equipment_category?.name || '' },
+        rarity: { name: rarity?.name || '' },
         requires_attunement,
         weight,
         cost: {
@@ -156,16 +130,13 @@ const equipmentController = {
         },
         desc,
         magical,
-        effects: effects ? effects.map(effect => ({
-          effectName: effect.effectName || '',
-          effectDescription: effect.effectDescription || ''
-        })) : []
+        effects: effects ? effects.map(effect => ({ effectName: effect.effectName || '', effectDescription: effect.effectDescription || '' })) : []
       });
 
-      console.log('New Equipment object:', newEquipment);
+      console.log('New Equipment customId:', newEquipment.customId);
 
       const savedEquipment = await newEquipment.save();
-      console.log('Saved Equipment object:', savedEquipment);
+      console.log('Saved Equipment customId:', savedEquipment.customId);
       res.status(201).json(savedEquipment);
     } catch (error) {
       console.error("Error when creating equipment:", error);
@@ -201,13 +172,12 @@ const equipmentController = {
     }
   },
 
- // Update an equipment item
+  // Update an equipment item
   async updateEquipment(req, res) {
     try {
       const { id } = req.params;
       const updatedData = req.body;
 
-      // Remove _id from updatedData if it exists
       delete updatedData._id;
 
       const updatedEquipment = await Equipment.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
@@ -222,7 +192,6 @@ const equipmentController = {
       res.status(500).json({ message: 'Failed to update equipment', error: error.message });
     }
   }
-
 };
 
 module.exports = equipmentController;

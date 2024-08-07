@@ -55,7 +55,9 @@ const equipmentSchema = new Schema({
   effects: [{ 
     effectName: { type: String, default: '' },
     effectDescription: { type: String, default: '' }
-  }]
+  }],
+
+  customId: { type: String, unique: true, default: '' }  // Unique customId field
 });
 
 const Equipment = mongoose.model('Equipment', equipmentSchema);
